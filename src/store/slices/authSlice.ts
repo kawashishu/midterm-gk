@@ -10,6 +10,7 @@ import {
   SecurityCodePayload,
   NewPasswordData,
   setNewPassword,
+  logout,
 } from '@app/api/auth.api';
 import { setUser } from '@app/store/slices/userSlice';
 import { deleteToken, deleteUser, persistToken, readToken } from '@app/services/localStorage.service';
@@ -24,10 +25,11 @@ const initialState: AuthSlice = {
 
 export const doLogin = createAsyncThunk('auth/doLogin', async (loginPayload: LoginRequest, { dispatch }) =>
   login(loginPayload).then((res) => {
+    console.log(res);
     dispatch(setUser(res.user));
-    persistToken(res.token);
+    persistToken(res.tokens);
 
-    return res.token;
+    return res.tokens.access.token;
   }),
 );
 
@@ -50,6 +52,7 @@ export const doSetNewPassword = createAsyncThunk('auth/doSetNewPassword', async 
 );
 
 export const doLogout = createAsyncThunk('auth/doLogout', (payload, { dispatch }) => {
+  logout();
   deleteToken();
   deleteUser();
   dispatch(setUser(null));

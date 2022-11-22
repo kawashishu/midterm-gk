@@ -29,13 +29,24 @@ const testUser = {
     linkedin: 'https://linkedin.com/company/altence',
   },
 };
-
-export const persistToken = (token: string): void => {
-  localStorage.setItem('accessToken', token);
+interface Tokens {
+  access: {
+    token: string;
+    expires: string;
+  };
+  refresh: {
+    token: string;
+    expires: string;
+  };
+}
+export const persistToken = (tokens: Tokens): void => {
+  localStorage.setItem('accessToken', JSON.stringify(tokens.access));
+  localStorage.setItem('refreshToken', JSON.stringify(tokens.refresh));
 };
 
 export const readToken = (): string => {
-  return localStorage.getItem('accessToken') || 'bearerToken';
+  const token = localStorage.getItem('accessToken');
+  return token ? JSON.parse(token).token : '';
 };
 
 export const persistUser = (user: UserModel): void => {
@@ -48,5 +59,8 @@ export const readUser = (): UserModel | null => {
   return userStr ? JSON.parse(userStr) : testUser;
 };
 
-export const deleteToken = (): void => localStorage.removeItem('accessToken');
+export const deleteToken = (): void => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+};
 export const deleteUser = (): void => localStorage.removeItem('user');

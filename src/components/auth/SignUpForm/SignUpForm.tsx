@@ -19,11 +19,11 @@ interface SignUpFormData {
 }
 
 const initValues = {
-  firstName: 'Chris',
-  lastName: 'Johnson',
-  email: 'chris.johnson@altence.com',
-  password: 'test-pass',
-  confirmPassword: 'test-pass',
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
   termOfUse: true,
 };
 
@@ -85,7 +85,14 @@ export const SignUpForm: React.FC = () => {
         <Auth.FormItem
           label={t('common.password')}
           name="password"
-          rules={[{ required: true, message: t('common.requiredField') }]}
+          rules={[
+            { required: true, message: t('common.requiredField') },
+            { min: 8, message: t('common.passwordMinLength') },
+            {
+              pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+              message: 'Password must contain at least 1 uppercase letter, 1 lowercase letter and 1 number',
+            },
+          ]}
         >
           <Auth.FormInputPassword placeholder={t('common.password')} />
         </Auth.FormItem>

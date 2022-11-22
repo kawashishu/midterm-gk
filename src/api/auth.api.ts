@@ -1,5 +1,4 @@
 import { httpApi } from '@app/api/http.api';
-import './mocks/auth.api.mock';
 import { UserModel } from '@app/domain/UserModel';
 
 export interface AuthData {
@@ -32,21 +31,35 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  token: string;
+  tokens: {
+    access: {
+      token: string;
+      expires: string;
+    };
+    refresh: {
+      token: string;
+      expires: string;
+    };
+  };
   user: UserModel;
 }
 
 export const login = (loginPayload: LoginRequest): Promise<LoginResponse> =>
-  httpApi.post<LoginResponse>('login', { ...loginPayload }).then(({ data }) => data);
+  httpApi.post<LoginResponse>('auth/login', { ...loginPayload }).then(({ data }) => data);
 
 export const signUp = (signUpData: SignUpRequest): Promise<undefined> =>
-  httpApi.post<undefined>('signUp', { ...signUpData }).then(({ data }) => data);
+  httpApi.post<undefined>('auth/register', { ...signUpData }).then(({ data }) => data);
 
 export const resetPassword = (resetPasswordPayload: ResetPasswordRequest): Promise<undefined> =>
-  httpApi.post<undefined>('forgotPassword', { ...resetPasswordPayload }).then(({ data }) => data);
+  httpApi.post<undefined>('auth/forgot-password', { ...resetPasswordPayload }).then(({ data }) => data);
 
 export const verifySecurityCode = (securityCodePayload: SecurityCodePayload): Promise<undefined> =>
   httpApi.post<undefined>('verifySecurityCode', { ...securityCodePayload }).then(({ data }) => data);
 
 export const setNewPassword = (newPasswordData: NewPasswordData): Promise<undefined> =>
-  httpApi.post<undefined>('setNewPassword', { ...newPasswordData }).then(({ data }) => data);
+  httpApi.post<undefined>('auth/reset-password', { ...newPasswordData }).then(({ data }) => data);
+
+export const verifyEmail = (token: string): Promise<undefined> =>
+  httpApi.post<undefined>('auth/verify-email', { token }).then(({ data }) => data);
+
+export const logout = (): Promise<undefined> => httpApi.post<undefined>('auth/logout').then(({ data }) => data);

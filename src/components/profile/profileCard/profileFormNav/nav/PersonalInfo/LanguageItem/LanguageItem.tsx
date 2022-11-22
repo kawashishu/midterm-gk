@@ -12,11 +12,13 @@ const languageOptions = languages.map((lang) => (
       <ReactCountryFlag svg countryCode={lang.countryCode} alt="country flag" />
       {lang.title}
     </Space>
+    <span>{lang.name}</span>
   </Option>
 ));
 
 export const LanguageItem: React.FC = () => {
   const { t } = useTranslation();
+  console.log(languages);
 
   return (
     <BaseButtonsForm.Item name="language" label={t('profile.nav.personalInfo.language')}>
