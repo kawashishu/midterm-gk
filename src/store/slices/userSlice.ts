@@ -1,6 +1,7 @@
-import { createAction, createSlice, PrepareAction } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk, createSlice, PrepareAction } from '@reduxjs/toolkit';
 import { UserModel } from '@app/domain/UserModel';
 import { persistUser, readUser } from '@app/services/localStorage.service';
+import { updateUserImg } from '@app/api/user.api';
 
 export interface UserState {
   user: UserModel | null;
@@ -18,12 +19,23 @@ export const setUser = createAction<PrepareAction<UserModel>>('user/setUser', (n
   };
 });
 
+export const updateImg = createAsyncThunk('user/updateImg', async (imgUrl: string, { dispatch }) =>
+  updateUserImg(imgUrl).then((res) => {
+    dispatch(setUser(res));
+
+    return res;
+  }),
+);
+
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(setUser, (state, action) => {
+      state.user = action.payload;
+    });
+    builder.addCase(updateImg.fulfilled, (state, action) => {
       state.user = action.payload;
     });
   },

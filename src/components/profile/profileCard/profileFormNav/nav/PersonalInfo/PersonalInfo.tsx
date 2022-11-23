@@ -1,6 +1,5 @@
 import { Card } from '@app/components/common/Card/Card';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
-import { CreditCard } from '@app/components/profile/profileCard/profileFormNav/nav/payments/paymentMethod/paymentForm/interfaces';
 import { FirstNameItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/FirstNameItem/FirstNameItem';
 import { LastNameItem } from '@app/components/profile/profileCard/profileFormNav/nav/PersonalInfo/LastNameItem/LastNameItem';
 import { notificationController } from '@app/controllers/notificationController';
@@ -8,6 +7,7 @@ import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Col, Row } from 'antd';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { EmailItem } from './EmailItem/EmailItem';
 
 interface PersonalInfoFormValues {
   lastName: string;
@@ -44,7 +44,7 @@ export const PersonalInfo: React.FC = () => {
   const { t } = useTranslation();
 
   const onFinish = useCallback(
-    (values: CreditCard) => {
+    (values) => {
       // todo dispatch an action here
       setLoading(true);
       setTimeout(() => {
@@ -90,16 +90,8 @@ export const PersonalInfo: React.FC = () => {
             </BaseButtonsForm.Item>
           </Col>
 
-          <Col span={24}>
-            <BaseButtonsForm.Item>
-              <BaseButtonsForm.Title>{t('common.address')}</BaseButtonsForm.Title>
-            </BaseButtonsForm.Item>
-          </Col>
-
-          <Col span={24}>
-            <BaseButtonsForm.Item>
-              <BaseButtonsForm.Title>{t('profile.nav.personalInfo.otherInfo')}</BaseButtonsForm.Title>
-            </BaseButtonsForm.Item>
+          <Col xs={24} md={12}>
+            <EmailItem />
           </Col>
         </Row>
       </BaseButtonsForm>
