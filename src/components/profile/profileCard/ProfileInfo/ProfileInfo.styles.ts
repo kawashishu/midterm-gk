@@ -114,3 +114,14 @@ export const Text = styled(Typography.Text)`
     text-align: left;
   }
 `;
+
+export const AvatarLabel = styled.label`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0rem 0.5rem;
+  height: 100%;
+  cursor: pointer;
+  background-color: rgba(var(--warning-rgb-color), 0.5);
+  border: 1px solid var(--text-secondary-color);
+`;

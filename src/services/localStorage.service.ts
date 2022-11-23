@@ -49,6 +49,11 @@ export const readToken = (): string => {
   return token ? JSON.parse(token).token : '';
 };
 
+export const readRefreshToken = (): string => {
+  const token = localStorage.getItem('refreshToken');
+  return token ? JSON.parse(token).token : '';
+};
+
 export const persistUser = (user: UserModel): void => {
   localStorage.setItem('user', JSON.stringify(user));
 };

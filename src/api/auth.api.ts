@@ -1,5 +1,6 @@
 import { httpApi } from '@app/api/http.api';
 import { UserModel } from '@app/domain/UserModel';
+import { readRefreshToken } from '@app/services/localStorage.service';
 
 export interface AuthData {
   email: string;
@@ -62,4 +63,9 @@ export const setNewPassword = (newPasswordData: NewPasswordData): Promise<undefi
 export const verifyEmail = (token: string): Promise<undefined> =>
   httpApi.post<undefined>('auth/verify-email', { token }).then(({ data }) => data);
 
-export const logout = (): Promise<undefined> => httpApi.post<undefined>('auth/logout').then(({ data }) => data);
+export const logout = (): Promise<undefined> =>
+  httpApi
+    .post<undefined>('auth/logout', {
+      refreshToken: readRefreshToken(),
+    })
+    .then(({ data }) => data);
