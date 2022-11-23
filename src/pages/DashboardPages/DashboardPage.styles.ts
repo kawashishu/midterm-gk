@@ -54,3 +54,21 @@ export const Item = styled.div`
   height: 150px;
   flex-shrink: 0;
 `;
+
+// 
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  height: 80%;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 300px;
+`;
