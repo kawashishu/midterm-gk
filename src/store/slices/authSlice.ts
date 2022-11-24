@@ -11,6 +11,8 @@ import {
   NewPasswordData,
   setNewPassword,
   logout,
+  LoginGoogleRequest,
+  googleLogin,
 } from '@app/api/auth.api';
 import { setUser } from '@app/store/slices/userSlice';
 import { deleteToken, deleteUser, persistToken, readToken } from '@app/services/localStorage.service';
@@ -25,7 +27,14 @@ const initialState: AuthSlice = {
 
 export const doLogin = createAsyncThunk('auth/doLogin', async (loginPayload: LoginRequest, { dispatch }) =>
   login(loginPayload).then((res) => {
-    console.log(res);
+    dispatch(setUser(res.user));
+    persistToken(res.tokens);
+
+    return res.tokens.access.token;
+  }),
+);
+export const doGoogleLogin = createAsyncThunk('auth/google', async (loginPayload: LoginGoogleRequest, { dispatch }) =>
+  googleLogin(loginPayload).then((res) => {
     dispatch(setUser(res.user));
     persistToken(res.tokens);
 
@@ -64,6 +73,9 @@ const authSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(doLogin.fulfilled, (state, action) => {
+      state.token = action.payload;
+    });
+    builder.addCase(doGoogleLogin.fulfilled, (state, action) => {
       state.token = action.payload;
     });
     builder.addCase(doLogout.fulfilled, (state) => {

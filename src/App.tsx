@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ConfigProvider } from 'antd';
 import deDe from 'antd/lib/locale/de_DE';
 import enUS from 'antd/lib/locale/en_US';
@@ -12,10 +12,21 @@ import { usePWA } from './hooks/usePWA';
 import { useThemeWatcher } from './hooks/useThemeWatcher';
 import { useAppSelector } from './hooks/reduxHooks';
 import { themeObject } from './styles/themes/themeVariables';
+import { gapi } from 'gapi-script';
 
 const App: React.FC = () => {
   const { language } = useLanguage();
   const theme = useAppSelector((state) => state.theme.theme);
+
+  useEffect(() => {
+    const initClient = () => {
+      gapi.client.init({
+        clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+        scope: '',
+      });
+    };
+    gapi.load('client:auth2', initClient);
+  });
 
   usePWA();
 
