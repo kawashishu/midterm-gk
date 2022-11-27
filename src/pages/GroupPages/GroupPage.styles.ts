@@ -55,7 +55,7 @@ export const Item = styled.div`
   flex-shrink: 0;
 `;
 
-// 
+//
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -63,12 +63,22 @@ export const Wrapper = styled.div`
   width: 100%;
   align-items: center;
   justify-content: center;
-
 `;
 
-export const Form = styled.form`
+export const Section = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  max-width: 300px;
+`;
+export const SectionTitle = styled.div`
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-color);
+`;
+
+export const SectionContent = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
 `;
