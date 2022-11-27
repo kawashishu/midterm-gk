@@ -45,8 +45,15 @@ export interface LoginResponse {
   user: UserModel;
 }
 
+export interface LoginGoogleRequest {
+  idToken: string;
+}
+
 export const login = (loginPayload: LoginRequest): Promise<LoginResponse> =>
   httpApi.post<LoginResponse>('auth/login', { ...loginPayload }).then(({ data }) => data);
+
+export const googleLogin = (loginPayload: LoginGoogleRequest): Promise<LoginResponse> =>
+  httpApi.post<LoginResponse>('auth/google', { ...loginPayload }).then(({ data }) => data);
 
 export const signUp = (signUpData: SignUpRequest): Promise<undefined> =>
   httpApi.post<undefined>('auth/register', { ...signUpData }).then(({ data }) => data);

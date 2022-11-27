@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import * as S from './SiderMenu.styles';
 import { sidebarNavigation, SidebarNavigationItem } from '../sidebarNavigation';
 import { Menu } from 'antd';
+import { UserModel } from '@app/domain/UserModel';
+import { readToken } from '@app/services/localStorage.service';
+import axios from 'axios';
+import { TeamOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons';
+import { GroupModel } from '@app/domain/GroupModel';
+import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
+import { setGroups } from '@app/store/slices/groupSlice';
+import { getGroups } from '@app/api/group.api';
+
 
 interface SiderContentProps {
   setCollapsed: (isCollapsed: boolean) => void;
 }
+
 
 const sidebarNavFlat = sidebarNavigation.reduce(
   (result: SidebarNavigationItem[], current) =>
@@ -18,6 +28,58 @@ const sidebarNavFlat = sidebarNavigation.reduce(
 const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   const { t } = useTranslation();
   const location = useLocation();
+
+  const [navItem, setNavItem] = React.useState<SidebarNavigationItem[]> (sidebarNavigation);
+
+  const groups = useAppSelector(state=> state.groups);
+
+  const dispatch = useAppDispatch();
+  useEffect(() => { 
+    console.log(groups);
+    if(!groups.isLoaded){
+      getGroups().then((data) => {
+        dispatch(setGroups(data))
+        })
+    } else {
+      const res = groups.groups;
+      const nav: SidebarNavigationItem[] = [
+        {
+          title: 'common.mygroup',
+          key: 'mygroup',
+          // TODO use path variable
+          icon: <TeamOutlined />,
+          children: []
+        },
+        {
+          title: 'common.joingroup',
+          key: 'joingroup',
+          // TODO use path variable
+          icon: <TeamOutlined />,
+          children: []
+        },
+      ]
+      res.myGroups.forEach(g=>{
+        nav[0].children?.push({
+          title: g.name,
+          key: g.id,
+          // TODO use path variable
+          url: `/group/${g.id}`,
+          icon: <TeamOutlined />,
+        })
+      })
+      res.joinGroups.forEach(g=>{
+        nav[1].children?.push({
+          title: g.name,
+          key: g.id,
+          // TODO use path variable
+          url: `/group/${g.id}`,
+          icon: <TeamOutlined />,
+        })
+      })
+      setNavItem([...navItem, ...nav]);
+    }
+    
+  }, [groups]);
 
   const currentMenuItem = sidebarNavFlat.find(({ url }) => url === location.pathname);
   const defaultSelectedKeys = currentMenuItem ? [currentMenuItem.key] : [];
@@ -34,7 +96,7 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
       defaultOpenKeys={defaultOpenKeys}
       onClick={() => setCollapsed(true)}
     >
-      {sidebarNavigation.map((nav) =>
+      {navItem.map((nav) =>
         nav.children && nav.children.length > 0 ? (
           <Menu.SubMenu
             key={nav.key}
@@ -55,6 +117,12 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
           </Menu.Item>
         ),
       )}
+
+      {/* {group?.map((g)=> ).map((group) => (
+        <Menu.Item key={group.id} title={group.name} icon={<TeamOutlined/>}>
+          <Link to={`/group/${group.id}`}>{group.name}</Link>
+        </Menu.Item>
+       ))} */}
     </S.Menu>
   );
 };

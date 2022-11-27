@@ -8005,6 +8005,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gapi-script@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "gapi-script@npm:1.2.0"
+  checksum: f61140855e9a4369de15badb2f4568fdd037d949561de5fd86eca379b89423301bc6062748aba6bd1be68a5329f6239ca9c4b6b5fe454ad6046b6b918979d1ba
+  languageName: node
+  linkType: hard
+
 "gauge@npm:^4.0.0":
   version: 4.0.0
   resolution: "gauge@npm:4.0.0"
@@ -10666,6 +10673,7 @@ __metadata:
     eslint-plugin-prettier: ^3.4.0
     eslint-plugin-react: ^7.24.0
     eslint-plugin-react-hooks: ^4.3.0
+    gapi-script: ^1.2.0
     google-map-react: ^2.1.10
     husky: ^6.0.0
     i18next: ^20.4.0
@@ -10680,6 +10688,7 @@ __metadata:
     react: ^17.0.2
     react-country-flag: ^3.0.2
     react-dom: ^17.0.2
+    react-google-login: ^5.2.2
     react-helmet: ^6.1.0
     react-i18next: ^11.11.4
     react-infinite-scroll-component: ^6.1.0
@@ -13748,7 +13757,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.1, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.7.2":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -14668,6 +14677,19 @@ __metadata:
   version: 3.2.0
   resolution: "react-fast-compare@npm:3.2.0"
   checksum: 8ef272c825ae329f61633ce4ce7f15aa5b84e5214d88bc0823880236e03e985a13195befa2c7a4eda7db3b017dc7985729152d88445823f652403cf36c2b86aa
+  languageName: node
+  linkType: hard
+
+"react-google-login@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "react-google-login@npm:5.2.2"
+  dependencies:
+    "@types/react": "*"
+    prop-types: ^15.6.0
+  peerDependencies:
+    react: ^16 || ^17
+    react-dom: ^16 || ^17
+  checksum: 29199c7035c3c1070a82241dc4063628d693f35a1736d292e3db736e52da825e8a53f9287b0b12b08a50d676973ce1349a4d8243cd849ca25fed6a4284378880
   languageName: node
   linkType: hard
 

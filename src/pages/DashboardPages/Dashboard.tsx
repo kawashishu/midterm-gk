@@ -1,10 +1,12 @@
 import { TrophyTwoTone } from '@ant-design/icons';
-import { createGroup } from '@app/api/group.api';
+import { createGroup, getGroups } from '@app/api/group.api';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { notificationsSeverities } from '@app/constants/notificationsSeverities';
 import { notificationController } from '@app/controllers/notificationController';
+import { useAppDispatch } from '@app/hooks/reduxHooks';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { readToken } from '@app/services/localStorage.service';
+import { setGroups } from '@app/store/slices/groupSlice';
 import { Button, Col, Row, Input, Typography } from 'antd';
 import axios from 'axios';
 import React, { useState } from 'react';
@@ -14,7 +16,7 @@ export const Dashboard = () => {
   const { isDesktop } = useResponsive();
 
   const [value, setValue] = useState('');
-  
+  const dispatch = useAppDispatch();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
@@ -26,7 +28,9 @@ export const Dashboard = () => {
     }
     console.log(readToken())
     createGroup(value).then((res) => {
-      console.log(res);
+      getGroups().then(data=>{
+        dispatch(setGroups(data));
+      })
       notificationController.success( { message: 'Group created successfully' });
      }).catch((err) => {
       console.log(err);
