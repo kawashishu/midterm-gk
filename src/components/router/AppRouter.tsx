@@ -15,6 +15,8 @@ import { withLoading } from '@app/hocs/withLoading.hoc';
 import { Dashboard } from '@app/pages/DashboardPages/Dashboard';
 import { GroupPage } from '@app/pages/GroupPages/GroupPage';
 import VerifyEmailPage from '@app/pages/VerifyEmailPage';
+import { InvitationPage } from '@app/pages/InvitationPage';
+import { JoinGroupLink } from '@app/pages/JoinGroupLink';
 
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
 const Error404Page = React.lazy(() => import('@app/pages/Error404Page'));
@@ -51,6 +53,8 @@ export const AppRouter: React.FC = () => {
           <Route path="profile" element={<ProfileLayout />}>
             <Route path="personal-info" element={<PersonalInfo />} />
           </Route>
+          <Route path="invitations/:id" element={<InvitationPage />} />
+          <Route path="join/:id" element={<JoinGroupLink />} />
         </Route>
         <Route path="/auth" element={<AuthLayoutFallback />}>
           <Route path="login" element={<LoginPage />} />
@@ -64,7 +68,6 @@ export const AppRouter: React.FC = () => {
           </Route>
         </Route>
         <Route path="/logout" element={<LogoutFallback />} />
-        
       </Routes>
     </BrowserRouter>
   );

@@ -1,4 +1,5 @@
 import { GroupModel } from '@app/domain/GroupModel';
+import { UserModel } from '@app/domain/UserModel';
 import { httpApi } from './http.api';
 
 export interface GroupResponse {
@@ -12,5 +13,20 @@ export const createGroup = (name: string): Promise<undefined> =>
 export const getGroups = (): Promise<GroupResponse> =>
   httpApi.get<GroupResponse>('groups/get-my-group').then(({ data }) => data);
 
+export const getGroup = (groupId: string): Promise<GroupModel> =>
+  httpApi.get<GroupModel>(`groups/${groupId}`).then(({ data }) => data);
+
 export const toggleOpenForJoin = (groupId: string): Promise<undefined> =>
   httpApi.post<undefined>('groups/toggle-open-for-join', { groupId }).then(({ data }) => data);
+
+export const removeUserFromGroup = (groupId: string, userId: string): Promise<UserModel> =>
+  httpApi.post<UserModel>('groups/remove-user-from-group', { groupId, userId }).then(({ data }) => data);
+
+export const joinGroupByCode = (code: string): Promise<GroupModel> =>
+  httpApi.post<GroupModel>('groups/join-group-by-code', { code }).then(({ data }) => data);
+
+export const inviteUsersToGroup = (listUserId: string[], groupId: string): Promise<undefined> =>
+  httpApi.post('invite', { groupId, users: listUserId }).then(({ data }) => data);
+
+export const exceptInvitation = (invitationId: string): Promise<GroupModel> =>
+  httpApi.get(`invite/accepted/${invitationId}`).then(({ data }) => data);

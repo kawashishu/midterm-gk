@@ -19,7 +19,6 @@ httpApi.interceptors.request.use((config) => {
   if (token) {
     const expires = new Date(token.expires);
     const now = new Date();
-    console.log(expires, now, expires < now);
     if (expires < now) {
       const refreshToken = readRefreshToken();
       if (refreshToken) {

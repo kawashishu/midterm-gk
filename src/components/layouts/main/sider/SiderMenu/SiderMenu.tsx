@@ -13,11 +13,9 @@ import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { setGroups } from '@app/store/slices/groupSlice';
 import { getGroups } from '@app/api/group.api';
 
-
 interface SiderContentProps {
   setCollapsed: (isCollapsed: boolean) => void;
 }
-
 
 const sidebarNavFlat = sidebarNavigation.reduce(
   (result: SidebarNavigationItem[], current) =>
@@ -29,17 +27,16 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const [navItem, setNavItem] = React.useState<SidebarNavigationItem[]> (sidebarNavigation);
+  const [navItem, setNavItem] = React.useState<SidebarNavigationItem[]>(sidebarNavigation);
 
-  const groups = useAppSelector(state=> state.groups);
+  const groups = useAppSelector((state) => state.groups);
 
   const dispatch = useAppDispatch();
-  useEffect(() => { 
-    console.log(groups);
-    if(!groups.isLoaded){
+  useEffect(() => {
+    if (!groups.isLoaded) {
       getGroups().then((data) => {
-        dispatch(setGroups(data))
-        })
+        dispatch(setGroups(data));
+      });
     } else {
       const res = groups.groups;
       const nav: SidebarNavigationItem[] = [
@@ -48,37 +45,36 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
           key: 'mygroup',
           // TODO use path variable
           icon: <TeamOutlined />,
-          children: []
+          children: [],
         },
         {
           title: 'common.joingroup',
           key: 'joingroup',
           // TODO use path variable
           icon: <TeamOutlined />,
-          children: []
+          children: [],
         },
-      ]
-      res.myGroups.forEach(g=>{
+      ];
+      res.myGroups.forEach((g) => {
         nav[0].children?.push({
           title: g.name,
           key: g.id,
           // TODO use path variable
           url: `/group/${g.id}`,
           icon: <TeamOutlined />,
-        })
-      })
-      res.joinGroups.forEach(g=>{
+        });
+      });
+      res.joinGroups.forEach((g) => {
         nav[1].children?.push({
           title: g.name,
           key: g.id,
           // TODO use path variable
           url: `/group/${g.id}`,
           icon: <TeamOutlined />,
-        })
-      })
-      setNavItem([...navItem, ...nav]);
+        });
+      });
+      setNavItem([...sidebarNavigation, ...nav]);
     }
-    
   }, [groups]);
 
   const currentMenuItem = sidebarNavFlat.find(({ url }) => url === location.pathname);

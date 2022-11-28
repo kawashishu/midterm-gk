@@ -63,12 +63,14 @@ export const Wrapper = styled.div`
   width: 100%;
   align-items: center;
   justify-content: center;
+  color: var(--text-main-color);
 `;
 
 export const Section = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 100%;
 `;
 export const SectionTitle = styled.div`
   font-size: 20px;
@@ -81,4 +83,11 @@ export const SectionContent = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   width: 100%;
+`;
+
+export const LinkWrapper = styled.div`
+  gap: 10px;
+  width: 100%;
+  overflow-wrap: break-word;
+  background-color: #cccccc4f;
 `;
