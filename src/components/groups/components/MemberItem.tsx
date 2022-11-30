@@ -1,4 +1,4 @@
-import { DashOutlined, UsergroupDeleteOutlined, UserOutlined } from '@ant-design/icons';
+import { DashOutlined, UsergroupDeleteOutlined, UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { UserModel } from '@app/domain/UserModel';
 import { Dropdown } from 'antd';
 import { useState } from 'react';
@@ -8,10 +8,12 @@ export const MemberItem = ({
   member,
   showAction,
   removeUser,
+  changeRole,
 }: {
   member: UserModel;
   showAction?: boolean;
   removeUser?: (user: UserModel) => void;
+  changeRole?: (user: UserModel) => void;
 }) => {
   return (
     <S.Item>
@@ -35,6 +37,15 @@ export const MemberItem = ({
                 }}
               >
                 <UsergroupDeleteOutlined /> remove
+              </S.MenuItem>
+              <S.MenuItem 
+                onClick={() => {
+                  if (changeRole) {
+                    changeRole(member);
+                  }
+                }}
+              >
+                <UserSwitchOutlined /> Change role
               </S.MenuItem>
             </div>
           }

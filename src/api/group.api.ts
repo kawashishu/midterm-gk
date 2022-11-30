@@ -30,3 +30,11 @@ export const inviteUsersToGroup = (listUserId: string[], groupId: string): Promi
 
 export const exceptInvitation = (invitationId: string): Promise<GroupModel> =>
   httpApi.get(`invite/accepted/${invitationId}`).then(({ data }) => data);
+
+export const setCoOwner = ( user: UserModel, group: GroupModel): Promise<undefined> =>
+  httpApi.post('groups/set-coowner', { userId:user.id, groupId:group.id }).then(({ data }) => data);
+
+export const setMember = ( user: UserModel, group: GroupModel): Promise<undefined> =>
+  httpApi.post('groups/set-member', { userId:user.id, groupId:group.id }).then(({ data }) => data);
+
+

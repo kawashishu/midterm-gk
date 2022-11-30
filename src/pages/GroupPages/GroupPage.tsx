@@ -1,5 +1,5 @@
 import { CrownOutlined, GroupOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-import { getGroup, inviteUsersToGroup, removeUserFromGroup, toggleOpenForJoin } from '@app/api/group.api';
+import { getGroup, inviteUsersToGroup, removeUserFromGroup, setCoOwner, setMember, toggleOpenForJoin } from '@app/api/group.api';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { MemberItem } from '@app/components/groups/components/MemberItem';
 import { InviteMemberModal } from '@app/components/groups/InviteMemberModal';
@@ -9,6 +9,7 @@ import { UserModel } from '@app/domain/UserModel';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Button, Row, Switch, Typography, Modal, Select } from 'antd';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import * as S from './GroupPage.styles';
@@ -93,6 +94,34 @@ export const GroupPage = () => {
         });
     }
   };
+
+  const handleChangeToCoOwner = (user: UserModel) => {
+    if (group) {
+      setCoOwner(user, group)
+        .then(() => {
+          setGroup({
+            ...group,
+            coOwner: [...group.coOwner, user],
+            members: group.members.filter((user) => user.id != user.id),
+          });
+          notificationController.success({ message: 'User changed to co-owner' });
+        });
+    }
+  }
+  const handleChangeToMember = (user: UserModel) => {
+    if (group) {
+      setMember(user, group)
+        .then(() => {
+          setGroup({
+            ...group,
+            members: [...group.members, user],
+            coOwner: group.coOwner.filter((user) => user.id != user.id),
+          });
+          notificationController.success({ message: 'User changed to member' });
+        });
+    }
+  }
+
   const desktopLayout = (
     <Row>
       <S.LeftSideCol xl={16} xxl={17} id="desktop-content"></S.LeftSideCol>
@@ -136,7 +165,7 @@ export const GroupPage = () => {
               <>
                 <h1>Co-Owner</h1>
                 {group.coOwner.map((u) => {
-                  return <MemberItem key={u.id} member={u} showAction={isOwner} removeUser={handleRemoveUser} />;
+                  return <MemberItem key={u.id} member={u} showAction={isOwner} changeRole={handleChangeToMember} removeUser={handleRemoveUser} />;
                 })}
               </>
             ) : (
@@ -146,7 +175,7 @@ export const GroupPage = () => {
               <>
                 <h1>Members</h1>
                 {group.members.map((u) => {
-                  return <MemberItem key={u.id} member={u} showAction={isOwner} removeUser={handleRemoveUser} />;
+                  return <MemberItem key={u.id} member={u} showAction={isOwner} changeRole={handleChangeToCoOwner} removeUser={handleRemoveUser} />;
                 })}
               </>
             ) : (
