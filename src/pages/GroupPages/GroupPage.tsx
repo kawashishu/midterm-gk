@@ -209,7 +209,6 @@ export const GroupPage = () => {
         visible={modalOpen}
         onCancel={handleCancel}
         onOk={handleOk}
-        onUsersSelected={(users) => {}}
         memberList={[...(group?.coOwner || []), ...(group?.members || [])]}
       />
     </Row>

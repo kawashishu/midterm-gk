@@ -2,17 +2,16 @@ import { searchUsers } from '@app/api/user.api';
 import { UserModel } from '@app/domain/UserModel';
 import useDebounce from '@app/hooks/useDebounce';
 import { Modal, Select } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface InviteMemberModalProps {
   visible: boolean;
   memberList: UserModel[];
   onOk: (listUserId: string[]) => void;
   onCancel: () => void;
-  onUsersSelected: (users: UserModel[]) => void;
 }
 
-export const InviteMemberModal = ({ visible, memberList, onOk, onCancel, onUsersSelected }: InviteMemberModalProps) => {
+export const InviteMemberModal = ({ visible, memberList, onOk, onCancel }: InviteMemberModalProps) => {
   const [listUsers, setListUsers] = useState<UserModel[]>([]);
   const [selectdUsers, setSelectedUsers] = useState<string[]>([]);
   const [search, setSearch] = useState('');
