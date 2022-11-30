@@ -7,4 +7,3 @@ export const Switch = styled(AntdSwitch)`
       linear-gradient(to right, var(--background-color), var(--background-color));
   }
 `;
- 

@@ -11,5 +11,5 @@ export default {
   nightMode: nightModeReducer,
   theme: themeReducer,
   pwa: pwaReducer,
-  groups: groupReducer
+  groups: groupReducer,
 };
