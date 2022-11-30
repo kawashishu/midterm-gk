@@ -1,5 +1,4 @@
 import { UserModel } from './UserModel';
-
 export interface GroupModel {
   name: string;
   owner: UserModel;

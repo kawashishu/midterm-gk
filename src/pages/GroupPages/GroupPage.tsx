@@ -1,5 +1,12 @@
 import { CrownOutlined, GroupOutlined, UsergroupAddOutlined } from '@ant-design/icons';
-import { getGroup, inviteUsersToGroup, removeUserFromGroup, setCoOwner, setMember, toggleOpenForJoin } from '@app/api/group.api';
+import {
+  getGroup,
+  inviteUsersToGroup,
+  removeUserFromGroup,
+  setCoOwner,
+  setMember,
+  toggleOpenForJoin,
+} from '@app/api/group.api';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { MemberItem } from '@app/components/groups/components/MemberItem';
 import { InviteMemberModal } from '@app/components/groups/InviteMemberModal';
@@ -97,30 +104,28 @@ export const GroupPage = () => {
 
   const handleChangeToCoOwner = (user: UserModel) => {
     if (group) {
-      setCoOwner(user, group)
-        .then(() => {
-          setGroup({
-            ...group,
-            coOwner: [...group.coOwner, user],
-            members: group.members.filter((user) => user.id != user.id),
-          });
-          notificationController.success({ message: 'User changed to co-owner' });
+      setCoOwner(user, group).then(() => {
+        setGroup({
+          ...group,
+          coOwner: [...group.coOwner, user],
+          members: group.members.filter((user) => user.id != user.id),
         });
+        notificationController.success({ message: 'User changed to co-owner' });
+      });
     }
-  }
+  };
   const handleChangeToMember = (user: UserModel) => {
     if (group) {
-      setMember(user, group)
-        .then(() => {
-          setGroup({
-            ...group,
-            members: [...group.members, user],
-            coOwner: group.coOwner.filter((user) => user.id != user.id),
-          });
-          notificationController.success({ message: 'User changed to member' });
+      setMember(user, group).then(() => {
+        setGroup({
+          ...group,
+          members: [...group.members, user],
+          coOwner: group.coOwner.filter((user) => user.id != user.id),
         });
+        notificationController.success({ message: 'User changed to member' });
+      });
     }
-  }
+  };
 
   const desktopLayout = (
     <Row>
@@ -165,7 +170,15 @@ export const GroupPage = () => {
               <>
                 <h1>Co-Owner</h1>
                 {group.coOwner.map((u) => {
-                  return <MemberItem key={u.id} member={u} showAction={isOwner} changeRole={handleChangeToMember} removeUser={handleRemoveUser} />;
+                  return (
+                    <MemberItem
+                      key={u.id}
+                      member={u}
+                      showAction={isOwner}
+                      changeRole={handleChangeToMember}
+                      removeUser={handleRemoveUser}
+                    />
+                  );
                 })}
               </>
             ) : (
@@ -175,7 +188,15 @@ export const GroupPage = () => {
               <>
                 <h1>Members</h1>
                 {group.members.map((u) => {
-                  return <MemberItem key={u.id} member={u} showAction={isOwner} changeRole={handleChangeToCoOwner} removeUser={handleRemoveUser} />;
+                  return (
+                    <MemberItem
+                      key={u.id}
+                      member={u}
+                      showAction={isOwner}
+                      changeRole={handleChangeToCoOwner}
+                      removeUser={handleRemoveUser}
+                    />
+                  );
                 })}
               </>
             ) : (
