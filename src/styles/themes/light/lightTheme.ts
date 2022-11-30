@@ -62,7 +62,7 @@ export const lightColorsTheme: ITheme = {
   additionalBackground: '#ffffff',
   collapseBackground: 'rgb(0, 108, 207)',
   timelineBackground: '#F8FBFF',
-  siderBackground: '#ffffff',
+  siderBackground: '#e7f4ff',
   spinnerBase: '#f42f25',
   scroll: '#c5d3e0',
   border: '#cce1f4',

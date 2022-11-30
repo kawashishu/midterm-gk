@@ -1,14 +1,47 @@
 import axios from 'axios';
 import { AxiosError } from 'axios';
 import { ApiError } from '@app/api/ApiError';
-import { readToken } from '@app/services/localStorage.service';
+import {
+  deleteToken,
+  deleteUser,
+  getToken,
+  persistToken,
+  readRefreshToken,
+  readToken,
+} from '@app/services/localStorage.service';
 
 export const httpApi = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
 httpApi.interceptors.request.use((config) => {
-  config.headers = { ...config.headers, Authorization: `Bearer ${readToken()}` };
+  const token = getToken();
+  if (token) {
+    const expires = new Date(token.expires);
+    const now = new Date();
+    if (expires < now) {
+      const refreshToken = readRefreshToken();
+      if (refreshToken) {
+        return axios
+          .post(`${process.env.REACT_APP_API_URL}/auth/refresh-tokens`, { refreshToken })
+          .then((response) => {
+            persistToken(response.data);
+            config.headers = { ...config.headers, Authorization: `Bearer ${readToken()}` };
+            return config;
+          })
+          .catch((error) => {
+            deleteToken();
+            deleteUser();
+            window.location.href = '/auth/login';
+            return Promise.reject(error);
+          });
+      }
+    } else {
+      config.headers = { ...config.headers, Authorization: `Bearer ${readToken()}` };
+    }
+  } else {
+    config.headers = { ...config.headers, Authorization: `Bearer ${readToken()}` };
+  }
 
   return config;
 });

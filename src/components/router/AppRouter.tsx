@@ -1,19 +1,22 @@
+import ForgotPasswordPage from '@app/pages/ForgotPasswordPage';
+import LoginPage from '@app/pages/LoginPage';
+import NewPasswordPage from '@app/pages/NewPasswordPage';
+import SignUpPage from '@app/pages/SignUpPage';
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 // no lazy loading for auth pages to avoid flickering
 const AuthLayout = React.lazy(() => import('@app/components/layouts/AuthLayout/AuthLayout'));
-import LoginPage from '@app/pages/LoginPage';
-import SignUpPage from '@app/pages/SignUpPage';
-import ForgotPasswordPage from '@app/pages/ForgotPasswordPage';
-import NewPasswordPage from '@app/pages/NewPasswordPage';
 
 import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import ProfileLayout from '@app/components/profile/ProfileLayout';
 import RequireAuth from '@app/components/router/RequireAuth';
 import { withLoading } from '@app/hocs/withLoading.hoc';
-import VerifyEmailPage from '@app/pages/VerifyEmailPage';
 import { Dashboard } from '@app/pages/DashboardPages/Dashboard';
+import { GroupPage } from '@app/pages/GroupPages/GroupPage';
+import VerifyEmailPage from '@app/pages/VerifyEmailPage';
+import { InvitationPage } from '@app/pages/InvitationPage';
+import { JoinGroupLink } from '@app/pages/JoinGroupLink';
 
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
 const Error404Page = React.lazy(() => import('@app/pages/Error404Page'));
@@ -44,11 +47,14 @@ export const AppRouter: React.FC = () => {
       <Routes>
         <Route path={DASHBOARD_PATH} element={protectedLayout}>
           <Route index element={<Dashboard />} />
+          <Route path="/group/:id" element={<GroupPage />} />
           <Route path="server-error" element={<ServerError />} />
           <Route path="404" element={<Error404 />} />
           <Route path="profile" element={<ProfileLayout />}>
             <Route path="personal-info" element={<PersonalInfo />} />
           </Route>
+          <Route path="invitations/:id" element={<InvitationPage />} />
+          <Route path="join/:id" element={<JoinGroupLink />} />
         </Route>
         <Route path="/auth" element={<AuthLayoutFallback />}>
           <Route path="login" element={<LoginPage />} />
