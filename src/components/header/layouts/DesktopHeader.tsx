@@ -1,6 +1,5 @@
 import React from 'react';
 import { Col, Row } from 'antd';
-import { NotificationsDropdown } from '../components/notificationsDropdown/NotificationsDropdown';
 import { ProfileDropdown } from '../components/profileDropdown/ProfileDropdown/ProfileDropdown';
 import { HeaderSearch } from '../components/HeaderSearch/HeaderSearch';
 import { SettingsDropdown } from '../components/settingsDropdown/SettingsDropdown';
@@ -38,10 +37,6 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
             <Row gutter={[{ xxl: 10 }, { xxl: 10 }]}>
               <Col>
                 <HeaderFullscreen />
-              </Col>
-
-              <Col>
-                <NotificationsDropdown />
               </Col>
 
               <Col>
