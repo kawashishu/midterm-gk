@@ -12,19 +12,9 @@ interface DesktopHeaderProps {
 
 export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout }) => {
   const leftSide = isTwoColumnsLayout ? (
-    <S.SearchColumn xl={16} xxl={17}>
-      <Row justify="space-between">
-        <Col xl={15} xxl={12}>
-          <HeaderSearch />
-        </Col>
-      </Row>
-    </S.SearchColumn>
+    <S.SearchColumn xl={16} xxl={17}></S.SearchColumn>
   ) : (
-    <>
-      <Col lg={10} xxl={8}>
-        <HeaderSearch />
-      </Col>
-    </>
+    <S.SearchColumn xl={8} xxl={9}></S.SearchColumn>
   );
 
   return (

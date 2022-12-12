@@ -4,6 +4,7 @@ import nightModeReducer from '@app/store/slices/nightModeSlice';
 import themeReducer from '@app/store/slices/themeSlice';
 import pwaReducer from '@app/store/slices/pwaSlice';
 import groupReducer from '@app/store/slices/groupSlice';
+import presentationSlice from './presentationSlice';
 
 export default {
   user: userReducer,
@@ -12,4 +13,5 @@ export default {
   theme: themeReducer,
   pwa: pwaReducer,
   groups: groupReducer,
+  presentations: presentationSlice,
 };

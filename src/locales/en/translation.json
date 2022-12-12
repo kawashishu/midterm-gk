@@ -235,7 +235,8 @@
       "verifyEmailPage": "Verify email page",
       "warning": "Warning",
       "zipcode": "Zipcode",
-      "delete":"Delete"
+      "delete":"Delete",
+      "presentation": "My Presentation"
   },
   "medical-dashboard": {
       "activity": {
@@ -313,6 +314,9 @@
           "title": "Treatment plan"
       },
       "water": "Water"
+  },
+  "presentation" : {
+    "create": "Create Presentation"
   },
   "dataDisplay": {
       "avatars": {

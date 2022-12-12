@@ -7,12 +7,14 @@ import { Menu } from 'antd';
 import { UserModel } from '@app/domain/UserModel';
 import { readToken } from '@app/services/localStorage.service';
 import axios from 'axios';
-import { TeamOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons';
+import Icon, { TeamOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons';
 import { GroupModel } from '@app/domain/GroupModel';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { setGroups } from '@app/store/slices/groupSlice';
 import { getGroups } from '@app/api/group.api';
-
+import { getPresentation } from '@app/api/presentation.api';
+import { setPresentation } from '@app/store/slices/presentationSlice';
+import { ReactComponent as PresentationIcon } from '@app/assets/icons/presentation.svg';
 interface SiderContentProps {
   setCollapsed: (isCollapsed: boolean) => void;
 }
@@ -30,6 +32,7 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   const [navItem, setNavItem] = React.useState<SidebarNavigationItem[]>(sidebarNavigation);
 
   const groups = useAppSelector((state) => state.groups);
+  const presentations = useAppSelector((state) => state.presentations);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -37,45 +40,63 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
       getGroups().then((data) => {
         dispatch(setGroups(data));
       });
+    } else if (!presentations.isLoaded) {
+      getPresentation().then((data) => {
+        dispatch(setPresentation(data));
+      });
     } else {
       const res = groups.groups;
-      const nav: SidebarNavigationItem[] = [
+      const myGroupsNav = res.myGroups.map((g) => {
+        return {
+          title: g.name,
+          key: g.id,
+          // TODO use path variable
+          url: `/group/${g.id}`,
+          icon: <TeamOutlined />,
+        };
+      });
+      const joinGroupsNav = res.joinGroups.map((g) => {
+        return {
+          title: g.name,
+          key: g.id,
+          // TODO use path variable
+          url: `/group/${g.id}`,
+          icon: <TeamOutlined />,
+        };
+      });
+      const presentationNav = presentations.presentations.map((p: any) => {
+        return {
+          title: p.name,
+          key: p.id,
+          // TODO use path variable
+          url: `/presentation/${p.id}`,
+          icon: <TeamOutlined />,
+        };
+      });
+      setNavItem([
+        ...sidebarNavigation,
         {
           title: 'common.mygroup',
           key: 'mygroup',
-          // TODO use path variable
           icon: <TeamOutlined />,
-          children: [],
+          children: myGroupsNav,
         },
         {
           title: 'common.joingroup',
           key: 'joingroup',
-          // TODO use path variable
           icon: <TeamOutlined />,
-          children: [],
+          children: joinGroupsNav,
         },
-      ];
-      res.myGroups.forEach((g) => {
-        nav[0].children?.push({
-          title: g.name,
-          key: g.id,
-          // TODO use path variable
-          url: `/group/${g.id}`,
-          icon: <TeamOutlined />,
-        });
-      });
-      res.joinGroups.forEach((g) => {
-        nav[1].children?.push({
-          title: g.name,
-          key: g.id,
-          // TODO use path variable
-          url: `/group/${g.id}`,
-          icon: <TeamOutlined />,
-        });
-      });
-      setNavItem([...sidebarNavigation, ...nav]);
+        {
+          title: 'common.presentation',
+          key: 'presentation',
+          icon: <PresentationIcon />,
+          url: '/presentation',
+          children: presentationNav,
+        },
+      ]);
     }
-  }, [groups]);
+  }, [groups, presentations]);
 
   const currentMenuItem = sidebarNavFlat.find(({ url }) => url === location.pathname);
   const defaultSelectedKeys = currentMenuItem ? [currentMenuItem.key] : [];

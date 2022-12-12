@@ -14,9 +14,15 @@ import RequireAuth from '@app/components/router/RequireAuth';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import { Dashboard } from '@app/pages/DashboardPages/Dashboard';
 import { GroupPage } from '@app/pages/GroupPages/GroupPage';
-import VerifyEmailPage from '@app/pages/VerifyEmailPage';
 import { InvitationPage } from '@app/pages/InvitationPage';
 import { JoinGroupLink } from '@app/pages/JoinGroupLink';
+import { PresentationPage } from '@app/pages/PresentationPages/PresentationPage';
+import VerifyEmailPage from '@app/pages/VerifyEmailPage';
+import { PresentationShowPage } from '@app/pages/PresentationPages/PresentationShowPage/PresentationShowPage';
+
+import io from 'socket.io-client';
+import { PublicPresentationPage } from '@app/pages/PublicPage/PublicPresentationPage';
+const socket = io('http://localhost:5000');
 
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
 const Error404Page = React.lazy(() => import('@app/pages/Error404Page'));
@@ -45,9 +51,14 @@ export const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/public" element={<AuthLayoutFallback />}>
+          <Route index element={<PublicPresentationPage socket={socket} />} />
+        </Route>
         <Route path={DASHBOARD_PATH} element={protectedLayout}>
           <Route index element={<Dashboard />} />
           <Route path="/group/:id" element={<GroupPage />} />
+          <Route path="/presentation/:id" element={<PresentationPage />} />
+          <Route path="/show/:id" element={<PresentationShowPage socket={socket} />} />
           <Route path="server-error" element={<ServerError />} />
           <Route path="404" element={<Error404 />} />
           <Route path="profile" element={<ProfileLayout />}>

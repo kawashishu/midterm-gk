@@ -1,3 +1,4 @@
+import { TeamOutlined } from '@ant-design/icons';
 import { ReactComponent as NftIcon } from '@app/assets/icons/nft-icon.svg';
 import React from 'react';
 
@@ -13,7 +14,6 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
   {
     title: 'common.dashboard',
     key: 'dashboard',
-    // TODO use path variable
     url: '/',
     icon: <NftIcon />,
   },

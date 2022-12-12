@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Col } from 'antd';
 import { LAYOUT, media } from '@app/styles/themes/constants';
+import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
+import { Divider as AntDivider } from 'antd';
 
 export const RightSideCol = styled(Col)`
   padding: ${LAYOUT.desktop.paddingVertical} ${LAYOUT.desktop.paddingHorizontal};
@@ -98,4 +100,44 @@ export const FloatButton = styled.div`
   bottom: 40px;
   right: 40px;
   z-index: 100;
+`;
+
+export const Form = styled(BaseForm)`
+  width: 100%;
+`;
+
+export const Divider = styled(AntDivider)`
+  border-top: 1px solid #fff;
+`;
+
+export const SliceNav = styled.div`
+  gap: 15px;
+  width: 100%;
+  color: var(--text-main-color);
+  position: relative;
+  overflow-x: scroll;
+`;
+
+export const SliceWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main-color);
+  position: relative;
+`;
+
+export const ContentSection = styled.div`
+  padding: 15px 0px;
+`;
+
+export const PresentationAction = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0px;
+  width: 100%;
+  gap: 15px;
 `;

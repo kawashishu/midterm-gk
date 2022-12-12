@@ -14,6 +14,7 @@ export default styled(Content)<HeaderProps>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 100%;
 
   @media only screen and ${media.md} {
     padding: ${LAYOUT.desktop.paddingVertical} ${LAYOUT.desktop.paddingHorizontal};

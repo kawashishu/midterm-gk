@@ -1,4 +1,4 @@
-import { CrownOutlined, GroupOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { CrownOutlined, GroupOutlined, SettingOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import {
   getGroup,
   inviteUsersToGroup,
@@ -15,7 +15,7 @@ import { GroupModel } from '@app/domain/GroupModel';
 import { UserModel } from '@app/domain/UserModel';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { Button, Row, Switch, Typography, Modal, Select } from 'antd';
+import { Button, Row, Switch, Typography, Modal, Select, Tooltip } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -28,6 +28,7 @@ export const GroupPage = () => {
   const [group, setGroup] = useState<GroupModel | null>(null);
 
   const user = useAppSelector((state) => state.user.user);
+  const [showSettings, setShowSettings] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -128,90 +129,110 @@ export const GroupPage = () => {
   };
 
   const desktopLayout = (
-    <Row>
-      <S.LeftSideCol xl={16} xxl={17} id="desktop-content"></S.LeftSideCol>
-      <S.RightSideCol xl={8} xxl={7}>
-        {group ? (
+    <S.Wrapper>
+      <S.FloatButton>
+        <Button
+          shape="circle"
+          icon={<SettingOutlined />}
+          onClick={() => {
+            setShowSettings(true);
+          }}
+        />
+      </S.FloatButton>
+      <Modal
+        visible={showSettings}
+        onCancel={() => {
+          setShowSettings(false);
+        }}
+        onOk={() => {
+          setShowSettings(false);
+        }}
+      >
+        <Row>
           <S.Wrapper>
-            <Typography.Title level={2}>GROUP INFO</Typography.Title>
-            <span>{group?.name}</span>
-            <div>
-              <CrownOutlined style={{ color: 'yellow' }} />
-              <span>{group.owner.firstName + ' ' + group.owner.lastName}</span>
-            </div>
-            {isOwner ? (
-              <S.Section>
-                <S.SectionContent>
-                  <h3>Open to join</h3>
-                  <Switch
-                    checkedChildren="On"
-                    unCheckedChildren="Off"
-                    checked={group.openForJoin}
-                    onChange={handleSwitchChange}
-                  />
-                </S.SectionContent>
-                {group.openForJoin ? (
-                  <S.SectionContent>
-                    <h3>Invite link</h3>
-                    <S.LinkWrapper>
-                      {group.inviteCode ? `${window.location.origin}/join/${group.inviteCode}` : 'No invite link'}
-                    </S.LinkWrapper>
-                  </S.SectionContent>
+            {group ? (
+              <S.Wrapper>
+                <Typography.Title level={2}>GROUP INFO</Typography.Title>
+                <span>{group?.name}</span>
+                <div>
+                  <CrownOutlined style={{ color: 'yellow' }} />
+                  <span>{group.owner.firstName + ' ' + group.owner.lastName}</span>
+                </div>
+                {isOwner ? (
+                  <S.Section>
+                    <S.SectionContent>
+                      <h3>Open to join</h3>
+                      <Switch
+                        checkedChildren="On"
+                        unCheckedChildren="Off"
+                        checked={group.openForJoin}
+                        onChange={handleSwitchChange}
+                      />
+                    </S.SectionContent>
+                    {group.openForJoin ? (
+                      <S.SectionContent>
+                        <h3>Invite link</h3>
+                        <S.LinkWrapper>
+                          {group.inviteCode ? `${window.location.origin}/join/${group.inviteCode}` : 'No invite link'}
+                        </S.LinkWrapper>
+                      </S.SectionContent>
+                    ) : null}
+                    <S.SectionContent>
+                      <Button size="small" icon={<UsergroupAddOutlined />} onClick={showModal}>
+                        Invite member
+                      </Button>
+                    </S.SectionContent>
+                  </S.Section>
                 ) : null}
-                <S.SectionContent>
-                  <Button size="small" icon={<UsergroupAddOutlined />} onClick={showModal}>
-                    Invite member
-                  </Button>
-                </S.SectionContent>
-              </S.Section>
-            ) : null}
 
-            {group.coOwner.length > 0 ? (
-              <>
-                <h1>Co-Owner</h1>
-                {group.coOwner.map((u) => {
-                  return (
-                    <MemberItem
-                      key={u.id}
-                      member={u}
-                      showAction={isOwner}
-                      changeRole={handleChangeToMember}
-                      removeUser={handleRemoveUser}
-                    />
-                  );
-                })}
-              </>
-            ) : (
-              <h1>No Co-Owner</h1>
-            )}
-            {group.members.length > 0 ? (
-              <>
-                <h1>Members</h1>
-                {group.members.map((u) => {
-                  return (
-                    <MemberItem
-                      key={u.id}
-                      member={u}
-                      showAction={isOwner}
-                      changeRole={handleChangeToCoOwner}
-                      removeUser={handleRemoveUser}
-                    />
-                  );
-                })}
-              </>
-            ) : (
-              <h1>No members</h1>
-            )}
+                {group.coOwner.length > 0 ? (
+                  <>
+                    <h1>Co-Owner</h1>
+                    {group.coOwner.map((u) => {
+                      return (
+                        <MemberItem
+                          key={u.id}
+                          member={u}
+                          showAction={isOwner}
+                          changeRole={handleChangeToMember}
+                          removeUser={handleRemoveUser}
+                        />
+                      );
+                    })}
+                  </>
+                ) : (
+                  <h1>No Co-Owner</h1>
+                )}
+                {group.members.length > 0 ? (
+                  <>
+                    <h1>Members</h1>
+                    {group.members.map((u) => {
+                      return (
+                        <MemberItem
+                          key={u.id}
+                          member={u}
+                          showAction={isOwner}
+                          changeRole={handleChangeToCoOwner}
+                          removeUser={handleRemoveUser}
+                        />
+                      );
+                    })}
+                  </>
+                ) : (
+                  <h1>No members</h1>
+                )}
+              </S.Wrapper>
+            ) : null}
           </S.Wrapper>
-        ) : null}
-      </S.RightSideCol>
-      <InviteMemberModal
-        visible={modalOpen}
-        onCancel={handleCancel}
-        onOk={handleOk}
-        memberList={[...(group?.coOwner || []), ...(group?.members || [])]}
-      />
-    </Row>
+          <InviteMemberModal
+            visible={modalOpen}
+            onCancel={handleCancel}
+            onOk={handleOk}
+            memberList={[...(group?.coOwner || []), ...(group?.members || [])]}
+          />
+        </Row>
+      </Modal>
+    </S.Wrapper>
   );
 
   const mobileAndTabletLayout = <Row gutter={[20, 24]}></Row>;

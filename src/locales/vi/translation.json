@@ -237,7 +237,8 @@
       "delete":"Xóa",
       "events": "Sự kiện",
       "action": "Hành động",
-      "date": "Ngày"
+      "date": "Ngày",
+      "presentation": "Trình chiếu"
   },
   "medical-dashboard": {
       "activity": {
@@ -315,6 +316,9 @@
           "title": "Behandlungsplan"
       },
       "water": "Wasser"
+  },
+  "presentation" : {
+    "create": "Tạo Bản Trình chiếu"
   },
   "dataDisplay": {
       "avatars": {
@@ -496,7 +500,7 @@
           "successPayment": "Ihre Zahlung wurde erfolgreich durchgeführt",
           "viewAll": "Alle ansehen"
       },
-      "search": "Suche"
+      "search": "Tìm kiếm"
   },
   "inputs": {
       "basic": "Đầu vào cơ bản",
