@@ -18,10 +18,14 @@ export const PublicPresentationPage = ({ socket }: { socket: Socket }) => {
 
   const listenToUpdateSlide = (code: string) => {
     socket.on(`presentation:${code}:slide`, (data: SlideModel) => {
-      if (slide && slide?.id !== data.id) {
-        setIsAnswered(false);
-      }
-      setSlide(data);
+      setSlide((prev) => {
+        if (prev) {
+          if (prev.id !== data.id) {
+            setIsAnswered(false);
+          }
+        }
+        return data;
+      });
     });
   };
 
@@ -63,7 +67,11 @@ export const PublicPresentationPage = ({ socket }: { socket: Socket }) => {
               </Radio.Group>
             </S.Options>
           ) : (
-            isAnswered && <div>Answered</div>
+            isAnswered && (
+              <S.Options>
+                <div>Answered</div>
+              </S.Options>
+            )
           )}
         </S.Container>
       ) : (

@@ -61,8 +61,10 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
     socket.on(`presentation:${code}:answer`, (data: SlideModel) => {
       setPresentation((prev) => {
         if (!prev) return null;
-        const newSlices = [...prev.slices];
-        newSlices[selectedSlice] = data;
+        const newSlices = prev.slices.map((slice) => {
+          if (slice.id === data.id) return data;
+          return slice;
+        });
         return { ...prev, slices: newSlices };
       });
       socket.emit('presentation:slide', { code: code, slide: data });
