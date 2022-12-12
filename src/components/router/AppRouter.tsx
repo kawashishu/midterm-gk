@@ -22,7 +22,7 @@ import { PresentationShowPage } from '@app/pages/PresentationPages/PresentationS
 
 import io from 'socket.io-client';
 import { PublicPresentationPage } from '@app/pages/PublicPage/PublicPresentationPage';
-const socket = io('http://localhost:5000');
+const socket = io(process.env.REACT_APP_BE_URL || 'http://localhost:5000');
 
 const ServerErrorPage = React.lazy(() => import('@app/pages/ServerErrorPage'));
 const Error404Page = React.lazy(() => import('@app/pages/Error404Page'));
