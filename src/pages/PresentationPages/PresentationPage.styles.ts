@@ -16,8 +16,8 @@ export const RightSideCol = styled(Col)`
 `;
 
 export const LeftSideCol = styled(Col)`
+  margin-left: 3rem;
   @media only screen and ${media.xl} {
-    padding: ${LAYOUT.desktop.paddingVertical} ${LAYOUT.desktop.paddingHorizontal};
     height: calc(100vh - ${LAYOUT.desktop.headerHeight});
     overflow: auto;
   }

@@ -4,13 +4,19 @@ import { Link } from 'react-router-dom';
 import { media } from '@app/styles/themes/constants';
 import { LAYOUT } from '@app/styles/themes/constants';
 
-export const Sider = styled(Layout.Sider)`
+export const Sider = styled(Layout.Sider)<{ $isCollapsed: boolean }>`
   position: fixed;
   overflow: visible;
   right: 0;
   z-index: 5;
   min-height: 100vh;
   max-height: 100vh;
+
+  ${(props) =>
+    props.$isCollapsed &&
+    css`
+      position: absolute;
+    `}
 
   color: var(--text-secondary-color);
 
@@ -20,7 +26,7 @@ export const Sider = styled(Layout.Sider)`
   }
 
   @media only screen and ${media.xl} {
-    position: unset;
+    position: absolute;
   }
 `;
 
@@ -30,12 +36,12 @@ export const CollapseButton = styled(Button)<{ $isCollapsed: boolean }>`
   border: 1px solid var(--border-color);
   transition: all 0.2s ease;
   position: absolute;
-  right: 0.5rem;
+  left: 14.5rem;
 
   ${(props) =>
     props.$isCollapsed &&
     css`
-      right: -1rem;
+      left: 4rem;
     `}
 
   color: var(--text-secondary-color);

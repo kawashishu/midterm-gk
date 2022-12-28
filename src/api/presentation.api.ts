@@ -1,4 +1,5 @@
 import { PresentationModel } from '@app/domain/PresentationModel';
+import { UserModel } from '@app/domain/UserModel';
 import { httpApi } from './http.api';
 
 export const createPresentation = (name: string) =>
@@ -25,3 +26,14 @@ export const deleteSlice = (id: string, sliceId: string) =>
 
 export const updateSlice = (id: string, sliceId: string, data: any) =>
   httpApi.put<undefined>(`presentations/${id}/update/${sliceId}`, data).then(({ data }) => data);
+
+export const getCollaborators = (id: string) =>
+  httpApi.get<UserModel[]>(`presentations/${id}/collaborators`).then(({ data }) => data);
+
+export const addMultiCollaborators = (id: string, ids: string[]) =>
+  httpApi
+    .post<UserModel[]>(`presentations/${id}/collaborators/add-multi`, { collaboratorIds: ids })
+    .then(({ data }) => data);
+
+export const removeCollaborator = (id: string, collaboratorId: string) =>
+  httpApi.delete<UserModel[]>(`presentations/${id}/collaborators/remove/${collaboratorId}`).then(({ data }) => data);

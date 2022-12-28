@@ -7,6 +7,7 @@ export const Slide = styled(Card)`
   gap: 15px;
   min-height: 300px;
   min-width: 500px;
+  width: 100%;
 `;
 
 export const SildeBody = styled.div`

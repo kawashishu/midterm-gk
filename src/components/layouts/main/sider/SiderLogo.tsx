@@ -11,8 +11,7 @@ interface SiderLogoProps {
   toggleSider: () => void;
 }
 export const SiderLogo: React.FC<SiderLogoProps> = ({ isSiderCollapsed, toggleSider }) => {
-  const { tabletOnly } = useResponsive();
-
+  const { mobileOnly } = useResponsive();
   const theme = useAppSelector((state) => state.theme.theme);
 
   const img = theme === 'dark' ? logoDark : logo;
@@ -23,7 +22,8 @@ export const SiderLogo: React.FC<SiderLogoProps> = ({ isSiderCollapsed, toggleSi
         <img src={img} alt="Lightence" width={48} height={48} />
         <S.BrandSpan>Kapoll</S.BrandSpan>
       </S.SiderLogoLink>
-      {tabletOnly && (
+
+      {!mobileOnly && (
         <S.CollapseButton
           shape="circle"
           size="small"
