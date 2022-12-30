@@ -97,5 +97,5 @@ export const FloatButton = styled.div`
   position: fixed;
   bottom: 40px;
   right: 40px;
-  z-index: 100;
+  z-index: 10;
 `;

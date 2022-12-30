@@ -49,47 +49,53 @@ export const PublicPresentationPage = ({ socket }: { socket: Socket }) => {
     setIsAnswered(true);
   };
 
-  return onPresentation ? (
-    <>
-      {slide !== null ? (
-        <S.Container>
-          <PresSlide slide={slide} />
-          {slide.type === SliceType.MULTIPLE_CHOICE && slide.options && !isAnswered ? (
-            <S.Options>
-              <Radio.Group onChange={handleOptionsChange}>
-                <Space direction="vertical">
-                  {slide.options.map((option) => (
-                    <Radio value={option} key={option.name}>
-                      {option.name}
-                    </Radio>
-                  ))}
-                </Space>
-              </Radio.Group>
-            </S.Options>
+  return (
+    <S.BackgroundWrapper>
+      {onPresentation ? (
+        <>
+          {slide !== null ? (
+            <S.Container>
+              <PresSlide slide={slide} />
+              {slide.type === SliceType.MULTIPLE_CHOICE && slide.options && !isAnswered ? (
+                <S.Options>
+                  <Radio.Group onChange={handleOptionsChange}>
+                    <Space direction="horizontal">
+                      {slide.options.map((option) => (
+                        <Radio value={option} key={option.name}>
+                          {option.name}
+                        </Radio>
+                      ))}
+                    </Space>
+                  </Radio.Group>
+                </S.Options>
+              ) : (
+                isAnswered && (
+                  <S.Options>
+                    <div>Answered</div>
+                  </S.Options>
+                )
+              )}
+            </S.Container>
           ) : (
-            isAnswered && (
-              <S.Options>
-                <div>Answered</div>
-              </S.Options>
-            )
+            <div>Slide not found</div>
           )}
-        </S.Container>
+        </>
       ) : (
-        <div>Slide not found</div>
+        <S.Container>
+          <Card size="small">
+            <BaseForm onFinish={handleOnFinish}>
+              <BaseForm.Item label="Presentation Code" name="code">
+                <Input />
+              </BaseForm.Item>
+              <BaseForm.Item>
+                <Button style={{ width: '100%' }} type="primary" htmlType="submit">
+                  Join
+                </Button>
+              </BaseForm.Item>
+            </BaseForm>
+          </Card>
+        </S.Container>
       )}
-    </>
-  ) : (
-    <Card>
-      <BaseForm onFinish={handleOnFinish}>
-        <BaseForm.Item label="Presentation Code" name="code">
-          <Input />
-        </BaseForm.Item>
-        <BaseForm.Item>
-          <Button style={{ width: '100%' }} type="primary" htmlType="submit">
-            Join
-          </Button>
-        </BaseForm.Item>
-      </BaseForm>
-    </Card>
+    </S.BackgroundWrapper>
   );
 };

@@ -10,6 +10,7 @@ import {
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { MemberItem } from '@app/components/groups/components/MemberItem';
 import { InviteMemberModal } from '@app/components/groups/InviteMemberModal';
+import { GroupPresentation } from '@app/components/presentations/GroupPresentation/GroupPresentation';
 import { notificationController } from '@app/controllers/notificationController';
 import { GroupModel } from '@app/domain/GroupModel';
 import { UserModel } from '@app/domain/UserModel';
@@ -19,9 +20,10 @@ import { Button, Row, Switch, Typography, Modal, Select, Tooltip } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
 import * as S from './GroupPage.styles';
 
-export const GroupPage = () => {
+export const GroupPage = ({ socket }: { socket: Socket }) => {
   const { isDesktop } = useResponsive();
 
   const params = useParams();
@@ -130,6 +132,11 @@ export const GroupPage = () => {
 
   const desktopLayout = (
     <S.Wrapper>
+      {group && group.presentation && group.presentation.isShowInGroup ? (
+        <GroupPresentation socket={socket} code={group.presentation.code} />
+      ) : (
+        <Typography>No presentation</Typography>
+      )}
       <S.FloatButton>
         <Button
           shape="circle"
@@ -235,12 +242,10 @@ export const GroupPage = () => {
     </S.Wrapper>
   );
 
-  const mobileAndTabletLayout = <Row gutter={[20, 24]}></Row>;
-
   return (
     <>
       <PageTitle>Group</PageTitle>
-      {isDesktop ? desktopLayout : mobileAndTabletLayout}
+      {desktopLayout}
     </>
   );
 };

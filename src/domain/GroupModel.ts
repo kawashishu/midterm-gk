@@ -1,3 +1,4 @@
+import { PresentationModel } from './PresentationModel';
 import { UserModel } from './UserModel';
 export interface GroupModel {
   name: string;
@@ -7,4 +8,5 @@ export interface GroupModel {
   id: string;
   inviteCode: string;
   openForJoin: boolean;
+  presentation: PresentationModel;
 }

@@ -10,7 +10,7 @@ export const RightSideCol = styled(Col)`
   top: 0;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - ${LAYOUT.desktop.headerHeight});
+  height: calc(95vh - ${LAYOUT.desktop.headerHeight});
   background-color: var(--sider-background-color);
   overflow-y: auto;
 `;
@@ -18,7 +18,7 @@ export const RightSideCol = styled(Col)`
 export const LeftSideCol = styled(Col)`
   margin-left: 3rem;
   @media only screen and ${media.xl} {
-    height: calc(100vh - ${LAYOUT.desktop.headerHeight});
+    height: calc(95vh - ${LAYOUT.desktop.headerHeight});
     overflow: auto;
   }
 `;

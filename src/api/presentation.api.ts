@@ -13,6 +13,9 @@ export const getPresentationById = (id: string) =>
 export const showPresentation = (id: string) =>
   httpApi.get<undefined>(`presentations/${id}/show`).then(({ data }) => data);
 
+export const showPresentationInGroup = (id: string, groupId: string) =>
+  httpApi.post<undefined>(`presentations/${id}/show-in-group`, { groupId }).then(({ data }) => data);
+
 export const joinPresentation = (code: string) =>
   httpApi.get<undefined>(`presentations/join/${code}`).then(({ data }) => data);
 

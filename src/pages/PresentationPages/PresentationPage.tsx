@@ -1,4 +1,4 @@
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, QuestionCircleFilled } from '@ant-design/icons';
 import {
   addSlice,
   deletePresentation,
@@ -12,6 +12,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Select } from '@app/components/common/selects/Select/Select';
 import { CollaboratorModal } from '@app/components/presentations/CollaboratorModal';
+import { GroupChooseModal } from '@app/components/presentations/GroupChooseModal';
 import { MultiChoiceContentForm } from '@app/components/presentations/MultiChoiceContentForm/MultiChoiceContentForm';
 import { PresSlide } from '@app/components/presentations/Slide/PresSlide';
 import { notificationController } from '@app/controllers/notificationController';
@@ -19,12 +20,13 @@ import { PresentationModel, SlideModel, SliceType } from '@app/domain/Presentati
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { setPresentation as reduxSetPresentation } from '@app/store/slices/presentationSlice';
-import { Button, Row, Tabs, Form, Modal } from 'antd';
+import { Button, Row, Tabs, Form, Modal, Popconfirm } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Socket } from 'socket.io-client';
 import * as S from './PresentationPage.styles';
 
-export const PresentationPage = () => {
+export const PresentationPage = ({ socket }: { socket: Socket }) => {
   const { isDesktop } = useResponsive();
   const params = useParams();
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ export const PresentationPage = () => {
   const [presentation, setPresentation] = useState<PresentationModel | null>(null);
   const [selectedSlice, setSelectedSlice] = useState<SlideModel | null>(null);
   const [showColapModal, setShowColapModal] = useState(false);
+  const [showGroupChooseModal, setShowGroupChooseModal] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -79,6 +82,9 @@ export const PresentationPage = () => {
         getPresentationById(presentation?.id)
           .then((data) => {
             setPresentation(data as unknown as PresentationModel);
+            const newSlice = data.slices.find((s) => s.id === selectedSlice.id);
+            if (!newSlice) return;
+            const sliceIndex = data.slices.indexOf(newSlice);
             if (!selectedSlice) {
               if (data && data.slices.length > 0) {
                 setSelectedSlice(data.slices[0]);
@@ -86,7 +92,13 @@ export const PresentationPage = () => {
                 setSelectedSlice(null);
               }
             } else {
-              setSelectedSlice(data.slices.find((s) => s.id === selectedSlice.id) || null);
+              setSelectedSlice(newSlice || null);
+            }
+            if (data.isShowing) {
+              socket.emit('presentation:updateSlide', {
+                code: data.code,
+                data: { slice: newSlice, number: sliceIndex },
+              });
             }
           })
           .catch((err) => {
@@ -130,10 +142,12 @@ export const PresentationPage = () => {
     if (!presentation) return;
     showPresentation(presentation.id).then(() => {
       setPresentation({ ...presentation, isShowing: !presentation.isShowing });
-      presentation.isShowing
-        ? notificationController.success({ message: 'Presentation is now hidden' })
-        : notificationController.success({ message: 'Presentation is now visible' });
-      navigate(`/show/${presentation.id}`);
+      if (presentation.isShowing) {
+        notificationController.success({ message: 'Presentation is now hidden' });
+      } else {
+        notificationController.success({ message: 'Presentation is now visible' });
+        window.open(`/show/${presentation.id}`, '_blank');
+      }
     });
   };
 
@@ -210,9 +224,27 @@ export const PresentationPage = () => {
               <Link to={`/show/${presentation?.id}`}>Click here</Link> to continue present.
             </span>
           ) : null}
-          <Button htmlType="button" type="primary" onClick={handleShowPresentation}>
-            {presentation?.isShowing ? 'Stop' : 'Present'}
-          </Button>
+          {presentation?.isShowing ? (
+            <Button htmlType="button" type="primary" onClick={handleShowPresentation}>
+              Stop
+            </Button>
+          ) : (
+            <Popconfirm
+              placement="top"
+              title={'Where do you want to present ?'}
+              icon={<QuestionCircleFilled />}
+              onConfirm={handleShowPresentation}
+              onCancel={() => {
+                setShowGroupChooseModal(true);
+              }}
+              okText="Public"
+              cancelText="Group"
+            >
+              <Button htmlType="button" type="primary">
+                Present
+              </Button>
+            </Popconfirm>
+          )}
         </S.PresentationAction>
       </S.LeftSideCol>
       {/* {selectedSlice ? <PresSlide slide={selectedSlice} /> : null} */}
@@ -286,6 +318,20 @@ export const PresentationPage = () => {
           }}
         />
       ) : null}
+      {presentation && (
+        <GroupChooseModal
+          visible={showGroupChooseModal}
+          onOk={() => {
+            setShowGroupChooseModal(false);
+            setPresentation({ ...presentation, isShowing: true, isShowInGroup: true });
+            window.open(`/show/${presentation.id}`, '_blank');
+          }}
+          onCancel={() => {
+            setShowGroupChooseModal(false);
+          }}
+          presentationId={presentation.id}
+        />
+      )}
     </Row>
   );
 

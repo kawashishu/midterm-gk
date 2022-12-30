@@ -6,6 +6,7 @@ import { Button } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
+import * as S from './PresentationShowPage.styles';
 
 export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
   const params = useParams();
@@ -55,7 +56,7 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
     if (!isConnected) return;
     if (!presentation) return;
     socket.emit('presentation:slide', { code: presentation?.code, slide: presentation.slices[selectedSlice] });
-  }, [selectedSlice]);
+  }, [selectedSlice, presentation]);
 
   const listen = (code: string) => {
     socket.on(`presentation:${code}:answer`, (data: SlideModel) => {
@@ -69,14 +70,26 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
       });
       socket.emit('presentation:slide', { code: code, slide: data });
     });
+
+    socket.on(`presentation:${code}:updateSlide`, (data: any) => {
+      console.log(data);
+      setPresentation((prev) => {
+        if (!prev) return null;
+        console.log(prev.slices);
+        const { number, slice } = data;
+        const newData = [...prev.slices];
+        newData[number] = slice;
+        return { ...prev, slices: newData };
+      });
+    });
   };
 
   return (
-    <div>
+    <S.Container>
       {presentation?.slices[selectedSlice] ? (
         <PresSlide slide={presentation?.slices[selectedSlice]} isPresent={true} code={presentation.code} />
       ) : null}
-      <div>
+      <S.Action>
         <Button
           onClick={() => {
             if (selectedSlice > 0) setSelectedSlice(selectedSlice - 1);
@@ -95,7 +108,7 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
         >
           Next
         </Button>
-      </div>
-    </div>
+      </S.Action>
+    </S.Container>
   );
 };

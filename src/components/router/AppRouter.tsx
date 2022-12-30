@@ -3,7 +3,7 @@ import LoginPage from '@app/pages/LoginPage';
 import NewPasswordPage from '@app/pages/NewPasswordPage';
 import SignUpPage from '@app/pages/SignUpPage';
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 
 // no lazy loading for auth pages to avoid flickering
 const AuthLayout = React.lazy(() => import('@app/components/layouts/AuthLayout/AuthLayout'));
@@ -51,14 +51,22 @@ export const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/public" element={<AuthLayoutFallback />}>
+        <Route path="/public" element={<Outlet />}>
           <Route index element={<PublicPresentationPage socket={socket} />} />
         </Route>
+        <Route
+          path="/show/:id"
+          element={
+            <RequireAuth>
+              <PresentationShowPage socket={socket} />
+            </RequireAuth>
+          }
+        />
         <Route path={DASHBOARD_PATH} element={protectedLayout}>
           <Route index element={<Dashboard />} />
-          <Route path="/group/:id" element={<GroupPage />} />
-          <Route path="/presentation/:id" element={<PresentationPage />} />
-          <Route path="/show/:id" element={<PresentationShowPage socket={socket} />} />
+          <Route path="/group/:id" element={<GroupPage socket={socket} />} />
+          <Route path="/presentation/:id" element={<PresentationPage socket={socket} />} />
+
           <Route path="server-error" element={<ServerError />} />
           <Route path="404" element={<Error404 />} />
           <Route path="profile" element={<ProfileLayout />}>

@@ -8,6 +8,7 @@ export interface PresentationModel {
   slices: SlideModel[];
   group?: GroupModel;
   isShowing: boolean;
+  isShowInGroup: boolean;
 }
 
 export interface SlideModel {
