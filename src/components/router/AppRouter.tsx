@@ -44,7 +44,7 @@ const LogoutFallback = withLoading(Logout);
 export const AppRouter: React.FC = () => {
   const protectedLayout = (
     <RequireAuth>
-      <MainLayout />
+      <MainLayout socket={socket} />
     </RequireAuth>
   );
 

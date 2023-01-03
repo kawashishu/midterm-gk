@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 export interface GroupChooseModalProps {
   visible: boolean;
-  onOk: () => void;
+  onOk: (groups: string[]) => void;
   onCancel: () => void;
   presentationId: string;
 }
@@ -40,7 +40,7 @@ export const GroupChooseModal = ({ visible, onOk, onCancel, presentationId }: Gr
         checkedGroup.forEach((group) => {
           showPresentationInGroup(presentationId, group.id);
         });
-        onOk();
+        onOk(checkedGroup.map((group) => group.id));
       }}
       onCancel={onCancel}
     >

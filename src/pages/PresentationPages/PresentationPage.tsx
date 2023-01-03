@@ -143,6 +143,7 @@ export const PresentationPage = ({ socket }: { socket: Socket }) => {
     showPresentation(presentation.id).then(() => {
       setPresentation({ ...presentation, isShowing: !presentation.isShowing });
       if (presentation.isShowing) {
+        socket.emit('presentation:stop', { code: presentation.code });
         notificationController.success({ message: 'Presentation is now hidden' });
       } else {
         notificationController.success({ message: 'Presentation is now visible' });
@@ -321,9 +322,10 @@ export const PresentationPage = ({ socket }: { socket: Socket }) => {
       {presentation && (
         <GroupChooseModal
           visible={showGroupChooseModal}
-          onOk={() => {
+          onOk={(groups) => {
             setShowGroupChooseModal(false);
             setPresentation({ ...presentation, isShowing: true, isShowInGroup: true });
+            socket.emit('presentation:present', { presentationName: presentation.name, groups });
             window.open(`/show/${presentation.id}`, '_blank');
           }}
           onCancel={() => {

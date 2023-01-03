@@ -87,7 +87,11 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
   return (
     <S.Container>
       {presentation?.slices[selectedSlice] ? (
-        <PresSlide slide={presentation?.slices[selectedSlice]} isPresent={true} code={presentation.code} />
+        <PresSlide
+          slide={presentation?.slices[selectedSlice]}
+          isPresent={!presentation.isShowInGroup}
+          code={presentation.code}
+        />
       ) : null}
       <S.Action>
         <Button

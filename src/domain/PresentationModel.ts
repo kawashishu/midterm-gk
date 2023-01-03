@@ -18,6 +18,7 @@ export interface SlideModel {
   subheading?: string;
   content?: string;
   options?: OptionModel[];
+  answers: AnswerModal[];
 }
 
 export enum SliceType {
@@ -30,4 +31,9 @@ export interface OptionModel {
   id: number;
   name: string;
   count: number;
+}
+
+export interface AnswerModal {
+  user: UserModel;
+  answer: string;
 }
