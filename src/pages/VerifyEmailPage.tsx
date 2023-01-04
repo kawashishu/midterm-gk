@@ -3,13 +3,14 @@ import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { notificationController } from '@app/controllers/notificationController';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 const VerifyEmailPage: React.FC = () => {
   const { t } = useTranslation();
-  const { token } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   useEffect(() => {
+    const token = searchParams.get('token');
     if (token) {
       verifyEmail(token);
       navigate('/');
@@ -17,7 +18,7 @@ const VerifyEmailPage: React.FC = () => {
       notificationController.error({ message: t('verifyEmail.tokenError') });
       navigate('/auth/login');
     }
-  }, [token]);
+  }, [searchParams]);
   return (
     <>
       <PageTitle>{'Verify email'}</PageTitle>

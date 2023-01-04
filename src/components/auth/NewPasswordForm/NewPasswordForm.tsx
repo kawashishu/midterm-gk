@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { notificationController } from '@app/controllers/notificationController';
@@ -23,11 +23,15 @@ export const NewPasswordForm: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
-  const { token } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSubmit = (values: NewPasswordFormData) => {
     setLoading(true);
-    if (!token) return;
+    const token = searchParams.get('token');
+    if (!token) {
+      notificationController.error({ message: 'Token not found.' });
+      return;
+    }
     dispatch(doSetNewPassword({ token, password: values.password }))
       .unwrap()
       .then(() => {
