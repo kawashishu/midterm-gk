@@ -2658,6 +2658,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-facebook-login@npm:^4.1.5":
+  version: 4.1.5
+  resolution: "@types/react-facebook-login@npm:4.1.5"
+  dependencies:
+    "@types/react": "*"
+  checksum: eff7dc793f246031422ca2679298b73158c63f807b39f8e8320475ee5765bd38f0dc6362b366d9f4637165827722d86fdf2398d83d7321079b981cda86d6c46f
+  languageName: node
+  linkType: hard
+
 "@types/react-helmet@npm:^6.1.5":
   version: 6.1.5
   resolution: "@types/react-helmet@npm:6.1.5"
@@ -10686,6 +10695,7 @@ __metadata:
     "@types/leaflet": ^1.7.9
     "@types/react": ^17.0.43
     "@types/react-dom": ^17.0.14
+    "@types/react-facebook-login": ^4.1.5
     "@types/react-helmet": ^6.1.5
     "@types/react-phone-number-input": ^3.0.13
     "@types/react-responsive": ^8.0.2
@@ -10727,6 +10737,7 @@ __metadata:
     react: ^17.0.2
     react-country-flag: ^3.0.2
     react-dom: ^17.0.2
+    react-facebook-login: ^4.1.1
     react-google-login: ^5.2.2
     react-helmet: ^6.1.0
     react-i18next: ^11.11.4
@@ -14710,6 +14721,15 @@ __metadata:
   version: 6.0.9
   resolution: "react-error-overlay@npm:6.0.9"
   checksum: 695853bc885e798008a00c10d8d94e5ac91626e8130802fea37345f9c037f41b80104345db2ee87f225feb4a4ef71b0df572b17c378a6d397b6815f6d4a84293
+  languageName: node
+  linkType: hard
+
+"react-facebook-login@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "react-facebook-login@npm:4.1.1"
+  peerDependencies:
+    react: ^16.0.0
+  checksum: e644da474c6bf308e9a862c55397d61fd876a088345f3e9d234ec457eb3c205d1deb1263c5000005adfc1899bf6774cf761ee670c33bd6b0887f0dfd3bdff957
   languageName: node
   linkType: hard
 

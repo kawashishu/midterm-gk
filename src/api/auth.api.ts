@@ -23,7 +23,8 @@ export interface SecurityCodePayload {
 }
 
 export interface NewPasswordData {
-  newPassword: string;
+  token: string;
+  password: string;
 }
 
 export interface LoginRequest {
@@ -49,11 +50,18 @@ export interface LoginGoogleRequest {
   idToken: string;
 }
 
+export interface LoginFacebookRequest {
+  accessToken: string;
+}
+
 export const login = (loginPayload: LoginRequest): Promise<LoginResponse> =>
   httpApi.post<LoginResponse>('auth/login', { ...loginPayload }).then(({ data }) => data);
 
 export const googleLogin = (loginPayload: LoginGoogleRequest): Promise<LoginResponse> =>
   httpApi.post<LoginResponse>('auth/google', { ...loginPayload }).then(({ data }) => data);
+
+export const facebookLogin = (loginPayload: LoginFacebookRequest): Promise<LoginResponse> =>
+  httpApi.post<LoginResponse>('auth/facebook', { ...loginPayload }).then(({ data }) => data);
 
 export const signUp = (signUpData: SignUpRequest): Promise<undefined> =>
   httpApi.post<undefined>('auth/register', { ...signUpData }).then(({ data }) => data);
@@ -65,7 +73,9 @@ export const verifySecurityCode = (securityCodePayload: SecurityCodePayload): Pr
   httpApi.post<undefined>('verifySecurityCode', { ...securityCodePayload }).then(({ data }) => data);
 
 export const setNewPassword = (newPasswordData: NewPasswordData): Promise<undefined> =>
-  httpApi.post<undefined>('auth/reset-password', { ...newPasswordData }).then(({ data }) => data);
+  httpApi
+    .post<undefined>(`auth/reset-password?token=${newPasswordData.token}`, { password: newPasswordData.password })
+    .then(({ data }) => data);
 
 export const verifyEmail = (token: string): Promise<undefined> =>
   httpApi.post<undefined>('auth/verify-email', { token }).then(({ data }) => data);

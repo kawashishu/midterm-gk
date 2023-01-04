@@ -3,13 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
-import { doGoogleLogin, doLogin } from '@app/store/slices/authSlice';
+import { doFacebookLogin, doGoogleLogin, doLogin } from '@app/store/slices/authSlice';
 import { notificationController } from '@app/controllers/notificationController';
 import { ReactComponent as FacebookIcon } from '@app/assets/icons/facebook.svg';
 import { ReactComponent as GoogleIcon } from '@app/assets/icons/google.svg';
 import * as S from './LoginForm.styles';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 
 interface LoginFormData {
   email: string;
@@ -17,8 +18,8 @@ interface LoginFormData {
 }
 
 export const initValues: LoginFormData = {
-  email: 'hello@altence.com',
-  password: 'some-test-pass',
+  email: '',
+  password: '',
 };
 
 export const LoginForm: React.FC = () => {
@@ -101,15 +102,30 @@ export const LoginForm: React.FC = () => {
               });
           }}
         />
+        {/* <FacebookLogin
+          appId={process.env.REACT_APP_FACEBOOK_APP_ID || ''}
+          fields="name,email,picture"
+          callback={(res: any) => {
+            dispatch(doFacebookLogin({ accessToken: (res as any).accessToken }))
+              .unwrap()
+              .then(() => navigate('/'))
+              .catch((err) => {
+                notificationController.error({ message: err.message });
+                setLoading(false);
+              });
+          }}
+          render={(props) => (
+            <BaseForm.Item noStyle>
+              <Auth.SocialButton type="default" onClick={props.onClick}>
+                <Auth.SocialIconWrapper>
+                  <FacebookIcon />
+                </Auth.SocialIconWrapper>
+                {t('login.facebookLink')}
+              </Auth.SocialButton>
+            </BaseForm.Item>
+          )}
+        /> */}
 
-        <BaseForm.Item noStyle>
-          <Auth.SocialButton type="default">
-            <Auth.SocialIconWrapper>
-              <FacebookIcon />
-            </Auth.SocialIconWrapper>
-            {t('login.facebookLink')}
-          </Auth.SocialButton>
-        </BaseForm.Item>
         <Auth.FooterWrapper>
           <Auth.Text>
             {t('login.noAccount')}{' '}

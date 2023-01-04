@@ -9,16 +9,11 @@ interface HeaderProps {
 }
 
 export default styled(Content)<HeaderProps>`
-  padding: ${LAYOUT.mobile.paddingVertical} ${LAYOUT.mobile.paddingHorizontal};
   overflow: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-
-  @media only screen and ${media.md} {
-    padding: ${LAYOUT.desktop.paddingVertical} ${LAYOUT.desktop.paddingHorizontal};
-  }
 
   @media only screen and ${media.xl} {
     ${(props) =>

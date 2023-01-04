@@ -1,8 +1,13 @@
 import styled from 'styled-components';
-import { Col } from 'antd';
+import { Col, Row as AntdRow, Tabs as AntdTabs } from 'antd';
 import { LAYOUT, media } from '@app/styles/themes/constants';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Divider as AntDivider } from 'antd';
+
+export const Row = styled(AntdRow)`
+  height: 100%;
+  padding-left: 5rem;
+`;
 
 export const RightSideCol = styled(Col)`
   padding: ${LAYOUT.desktop.paddingVertical} ${LAYOUT.desktop.paddingHorizontal};
@@ -10,16 +15,28 @@ export const RightSideCol = styled(Col)`
   top: 0;
   display: flex;
   flex-direction: column;
-  height: calc(95vh - ${LAYOUT.desktop.headerHeight});
+  height: 100%;
   background-color: var(--sider-background-color);
   overflow-y: auto;
 `;
 
 export const LeftSideCol = styled(Col)`
-  margin-left: 3rem;
+  background-color: var(--additional-background-color);
   @media only screen and ${media.xl} {
-    height: calc(95vh - ${LAYOUT.desktop.headerHeight});
-    overflow: auto;
+    height: 100%;
+  }
+`;
+
+export const Tabs = styled(AntdTabs)`
+  height: 100%;
+  .ant-tabs {
+    height: 100%;
+  }
+  .ant-tabs-content-holder {
+    height: 100%;
+  }
+  .ant-tabs-content {
+    height: 100%;
   }
 `;
 
@@ -113,6 +130,7 @@ export const Divider = styled(AntDivider)`
 export const SliceNav = styled.div`
   gap: 15px;
   width: 100%;
+  height: 90%;
   color: var(--text-main-color);
   position: relative;
   overflow-x: scroll;
@@ -137,7 +155,7 @@ export const PresentationAction = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 0px;
+  padding: 1rem 0.5rem;
   width: 100%;
   gap: 15px;
 `;

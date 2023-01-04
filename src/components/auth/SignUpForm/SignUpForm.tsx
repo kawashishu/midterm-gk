@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useAppDispatch } from '@app/hooks/reduxHooks';
-import { doSignUp } from '@app/store/slices/authSlice';
+import { doGoogleLogin, doSignUp } from '@app/store/slices/authSlice';
 import { notificationController } from '@app/controllers/notificationController';
 import { ReactComponent as GoogleIcon } from '@app/assets/icons/google.svg';
 import { ReactComponent as FacebookIcon } from '@app/assets/icons/facebook.svg';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import * as S from './SignUpForm.styles';
+import GoogleLogin from 'react-google-login';
 
 interface SignUpFormData {
   firstName: string;
@@ -135,22 +136,36 @@ export const SignUpForm: React.FC = () => {
             {t('common.signUp')}
           </Auth.SubmitButton>
         </BaseForm.Item>
-        <BaseForm.Item noStyle>
-          <Auth.SocialButton type="default" htmlType="submit">
-            <Auth.SocialIconWrapper>
-              <GoogleIcon />
-            </Auth.SocialIconWrapper>
-            {t('signup.googleLink')}
-          </Auth.SocialButton>
-        </BaseForm.Item>
-        <BaseForm.Item noStyle>
+        <GoogleLogin
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID || ''}
+          render={(props) => (
+            <BaseForm.Item noStyle>
+              <Auth.SocialButton type="default" onClick={props.onClick}>
+                <Auth.SocialIconWrapper>
+                  <GoogleIcon />
+                </Auth.SocialIconWrapper>
+                {t('login.googleLink')}
+              </Auth.SocialButton>
+            </BaseForm.Item>
+          )}
+          onSuccess={(res) => {
+            dispatch(doGoogleLogin({ idToken: (res as any).tokenId }))
+              .unwrap()
+              .then(() => navigate('/'))
+              .catch((err) => {
+                notificationController.error({ message: err.message });
+                setLoading(false);
+              });
+          }}
+        />
+        {/* <BaseForm.Item noStyle>
           <Auth.SocialButton type="default" htmlType="submit">
             <Auth.SocialIconWrapper>
               <FacebookIcon />
             </Auth.SocialIconWrapper>
             {t('signup.facebookLink')}
           </Auth.SocialButton>
-        </BaseForm.Item>
+        </BaseForm.Item> */}
         <Auth.FooterWrapper>
           <Auth.Text>
             {t('signup.alreadyHaveAccount')}{' '}

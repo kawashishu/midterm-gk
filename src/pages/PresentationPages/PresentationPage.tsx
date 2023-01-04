@@ -11,10 +11,12 @@ import {
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Select } from '@app/components/common/selects/Select/Select';
+import { AnswersModal } from '@app/components/presentations/AnswersModal';
 import { CollaboratorModal } from '@app/components/presentations/CollaboratorModal';
 import { GroupChooseModal } from '@app/components/presentations/GroupChooseModal';
 import { MultiChoiceContentForm } from '@app/components/presentations/MultiChoiceContentForm/MultiChoiceContentForm';
 import { PresSlide } from '@app/components/presentations/Slide/PresSlide';
+import { Slide } from '@app/components/presentations/Slide/PresSlide.styles';
 import { notificationController } from '@app/controllers/notificationController';
 import { PresentationModel, SlideModel, SliceType } from '@app/domain/PresentationModel';
 import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
@@ -38,6 +40,7 @@ export const PresentationPage = ({ socket }: { socket: Socket }) => {
   const [selectedSlice, setSelectedSlice] = useState<SlideModel | null>(null);
   const [showColapModal, setShowColapModal] = useState(false);
   const [showGroupChooseModal, setShowGroupChooseModal] = useState(false);
+  const [showAnswerModal, setShowAnswerModal] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -169,10 +172,10 @@ export const PresentationPage = ({ socket }: { socket: Socket }) => {
   };
 
   const desktopLayout = (
-    <Row>
-      <S.LeftSideCol xl={16} xxl={17} id="desktop-content">
+    <S.Row>
+      <S.LeftSideCol xl={17} xxl={18} id="desktop-content">
         <S.SliceNav>
-          <Tabs
+          <S.Tabs
             type="editable-card"
             tabPosition="left"
             tabBarStyle={{
@@ -198,7 +201,7 @@ export const PresentationPage = ({ socket }: { socket: Socket }) => {
                 </Tabs.TabPane>
               );
             })}
-          </Tabs>
+          </S.Tabs>
         </S.SliceNav>
         <S.PresentationAction>
           <div></div>
@@ -219,6 +222,16 @@ export const PresentationPage = ({ socket }: { socket: Socket }) => {
               </Button>
             </>
           )}
+          {selectedSlice?.type === SliceType.MULTIPLE_CHOICE ? (
+            <Button
+              htmlType="button"
+              onClick={() => {
+                setShowAnswerModal(true);
+              }}
+            >
+              View Answers
+            </Button>
+          ) : null}
           {presentation?.isShowing ? (
             <span>
               The presentaion is now showing.
@@ -334,7 +347,19 @@ export const PresentationPage = ({ socket }: { socket: Socket }) => {
           presentationId={presentation.id}
         />
       )}
-    </Row>
+      {selectedSlice?.type === SliceType.MULTIPLE_CHOICE ? (
+        <AnswersModal
+          visible={showAnswerModal}
+          onOk={() => {
+            setShowAnswerModal(false);
+          }}
+          onCancel={() => {
+            setShowAnswerModal(false);
+          }}
+          answers={selectedSlice.answers}
+        />
+      ) : null}
+    </S.Row>
   );
 
   return (

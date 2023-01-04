@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { notificationController } from '@app/controllers/notificationController';
@@ -14,8 +14,8 @@ interface NewPasswordFormData {
 }
 
 const initStates = {
-  password: 'new-password',
-  confirmPassword: 'new-password',
+  password: '',
+  confirmPassword: '',
 };
 
 export const NewPasswordForm: React.FC = () => {
@@ -23,10 +23,12 @@ export const NewPasswordForm: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
+  const { token } = useParams();
 
   const handleSubmit = (values: NewPasswordFormData) => {
     setLoading(true);
-    dispatch(doSetNewPassword({ newPassword: values.password }))
+    if (!token) return;
+    dispatch(doSetNewPassword({ token, password: values.password }))
       .unwrap()
       .then(() => {
         navigate('/auth/login');

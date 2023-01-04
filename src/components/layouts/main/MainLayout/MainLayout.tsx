@@ -65,9 +65,7 @@ const MainLayout: React.FC<any> = ({ socket }: { socket: Socket }) => {
           <Header toggleSider={toggleSider} isSiderOpened={!siderCollapsed} isTwoColumnsLayout={isTwoColumnsLayout} />
         </MainHeader>
         <MainContent id="main-content" $isTwoColumnsLayout={isTwoColumnsLayout}>
-          <div>
-            <Outlet />
-          </div>
+          <Outlet />
         </MainContent>
       </S.LayoutMain>
     </S.LayoutMaster>

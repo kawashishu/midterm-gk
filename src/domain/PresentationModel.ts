@@ -36,4 +36,6 @@ export interface OptionModel {
 export interface AnswerModal {
   user: UserModel;
   answer: string;
+  createAt: string;
+  _id: string;
 }

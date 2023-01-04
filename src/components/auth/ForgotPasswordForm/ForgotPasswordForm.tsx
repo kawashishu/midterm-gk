@@ -13,7 +13,7 @@ interface ForgotPasswordFormData {
 }
 
 const initValues = {
-  email: 'chris.johnson@altence.com',
+  email: '',
 };
 
 export const ForgotPasswordForm: React.FC = () => {
@@ -27,7 +27,11 @@ export const ForgotPasswordForm: React.FC = () => {
     dispatch(doResetPassword(values))
       .unwrap()
       .then(() => {
-        navigate('/auth/security-code');
+        notificationController.success({
+          message: 'Gửi email thành công. ',
+          description: 'Kiểm tra email và làm theo hướng dẫn để đặt lại mật khẩu.',
+        });
+        setLoading(false);
       })
       .catch((err) => {
         notificationController.error({ message: err.message });

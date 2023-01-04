@@ -13,6 +13,8 @@ import {
   logout,
   LoginGoogleRequest,
   googleLogin,
+  LoginFacebookRequest,
+  facebookLogin,
 } from '@app/api/auth.api';
 import { setUser } from '@app/store/slices/userSlice';
 import { deleteToken, deleteUser, persistToken, readToken } from '@app/services/localStorage.service';
@@ -42,6 +44,17 @@ export const doGoogleLogin = createAsyncThunk('auth/google', async (loginPayload
   }),
 );
 
+export const doFacebookLogin = createAsyncThunk(
+  'auth/facebook',
+  async (loginPayload: LoginFacebookRequest, { dispatch }) =>
+    facebookLogin(loginPayload).then((res) => {
+      dispatch(setUser(res.user));
+      persistToken(res.tokens);
+
+      return res.tokens.access.token;
+    }),
+);
+
 export const doSignUp = createAsyncThunk('auth/doSignUp', async (signUpPayload: SignUpRequest) =>
   signUp(signUpPayload),
 );
@@ -60,8 +73,8 @@ export const doSetNewPassword = createAsyncThunk('auth/doSetNewPassword', async 
   setNewPassword(newPasswordData),
 );
 
-export const doLogout = createAsyncThunk('auth/doLogout', (payload, { dispatch }) => {
-  logout();
+export const doLogout = createAsyncThunk('auth/doLogout', async (payload, { dispatch }) => {
+  await logout();
   deleteToken();
   deleteUser();
   dispatch(setUser(null));

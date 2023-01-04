@@ -1,6 +1,6 @@
 import { Card } from '@app/components/common/Card/Card';
 import { BaseChart, getDefaultTooltipStyles } from '@app/components/common/charts/BaseChart';
-import { SlideModel } from '@app/domain/PresentationModel';
+import { SliceType, SlideModel } from '@app/domain/PresentationModel';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { themeObject } from '@app/styles/themes/themeVariables';
 import * as S from './PresSlide.styles';
@@ -83,7 +83,7 @@ export const PresSlide = ({
         <h1>{slide.heading}</h1>
         <h2>{slide.subheading}</h2>
         <p>{slide.content}</p>
-        <BaseChart option={option} width="80%" />
+        {slide.type === SliceType.MULTIPLE_CHOICE ? <BaseChart option={option} width="80%" /> : null}
       </S.SildeBody>
     </S.Slide>
   );
