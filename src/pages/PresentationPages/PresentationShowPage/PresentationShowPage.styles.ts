@@ -17,3 +17,22 @@ export const Action = styled.div`
   z-index: 1;
   bottom: 40px;
 `;
+
+export const FloatButton = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  div {
+    padding: 0.5rem;
+  }
+
+  div:hover {
+    cursor: pointer;
+    scale: 1.2;
+  }
+`;

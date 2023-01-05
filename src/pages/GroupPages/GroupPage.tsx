@@ -19,12 +19,13 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Button, Row, Switch, Typography, Modal, Select, Tooltip } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import * as S from './GroupPage.styles';
 
 export const GroupPage = ({ socket }: { socket: Socket }) => {
   const { isDesktop } = useResponsive();
+  const navigator = useNavigate();
 
   const params = useParams();
   const [group, setGroup] = useState<GroupModel | null>(null);
@@ -130,10 +131,14 @@ export const GroupPage = ({ socket }: { socket: Socket }) => {
     }
   };
 
+  const handlePresentStop = () => {
+    navigator(window.location.pathname);
+  };
+
   const desktopLayout = (
     <S.Wrapper>
       {group && group.presentation && group.presentation.isShowInGroup ? (
-        <GroupPresentation socket={socket} code={group.presentation.code} />
+        <GroupPresentation socket={socket} code={group.presentation.code} onStop={handlePresentStop} />
       ) : (
         <Typography>No presentation</Typography>
       )}

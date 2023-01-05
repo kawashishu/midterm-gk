@@ -9,6 +9,7 @@ export interface PresentationModel {
   group?: GroupModel;
   isShowing: boolean;
   isShowInGroup: boolean;
+  chats: MessageModel[];
 }
 
 export interface SlideModel {
@@ -38,4 +39,11 @@ export interface AnswerModal {
   answer: string;
   createAt: string;
   _id: string;
+}
+
+export interface MessageModel {
+  id: string;
+  message: string;
+  user: UserModel;
+  createdAt: string;
 }

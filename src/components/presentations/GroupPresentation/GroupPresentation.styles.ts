@@ -37,8 +37,15 @@ export const FloatButton = styled.div`
   bottom: 10px;
   right: 20px;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  :hover {
+  div {
+    padding: 0.5rem;
+  }
+
+  div:hover {
     cursor: pointer;
     scale: 1.2;
   }

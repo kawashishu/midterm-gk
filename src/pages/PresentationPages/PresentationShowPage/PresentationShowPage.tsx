@@ -1,7 +1,10 @@
+import { MessageOutlined } from '@ant-design/icons';
 import { getPresentationById } from '@app/api/presentation.api';
+import { ChatBox } from '@app/components/presentations/ChatBox/ChatBox';
 import { PresSlide } from '@app/components/presentations/Slide/PresSlide';
 import { notificationController } from '@app/controllers/notificationController';
-import { PresentationModel, SlideModel } from '@app/domain/PresentationModel';
+import { MessageModel, PresentationModel, SlideModel } from '@app/domain/PresentationModel';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Button } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -11,10 +14,15 @@ import * as S from './PresentationShowPage.styles';
 export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
   const params = useParams();
   const navigate = useNavigate();
+  const { user } = useAppSelector((state) => state.user);
 
   const [presentation, setPresentation] = useState<PresentationModel | null>(null);
+  const [isLoadPresentation, setIsLoadPresentation] = useState(false);
   const [selectedSlice, setSelectedSlice] = useState<number>(0);
   const [isConnected, setIsConnected] = useState(socket.connected);
+
+  const [chats, setChats] = useState<MessageModel[]>([] as MessageModel[]);
+  const [chatVisible, setChatVisible] = useState(false);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -32,7 +40,9 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
   }, []);
 
   useEffect(() => {
+    if (isLoadPresentation) return;
     if (params.id) {
+      setIsLoadPresentation(true);
       getPresentationById(params.id)
         .then((data) => {
           if (!data) navigate(`/`);
@@ -42,13 +52,16 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
           setPresentation(data as unknown as PresentationModel);
           listen(data.code);
           socket.emit('presentation:slide', { code: data.code, slide: data.slices[selectedSlice] });
+          setIsLoadPresentation(false);
         })
         .catch((err) => {
           notificationController.error({ message: "You can't access this presentation." });
           console.log(err);
+          setIsLoadPresentation(false);
         });
     } else {
       notificationController.error({ message: 'Missing presentation id' });
+      setIsLoadPresentation(false);
     }
   }, [params]);
 
@@ -56,6 +69,7 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
     if (!isConnected) return;
     if (!presentation) return;
     socket.emit('presentation:slide', { code: presentation?.code, slide: presentation.slices[selectedSlice] });
+    socket.emit('presentation:join', { code: presentation?.code, randomNumber: user?.id });
   }, [selectedSlice, presentation]);
 
   const listen = (code: string) => {
@@ -72,18 +86,35 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
     });
 
     socket.on(`presentation:${code}:updateSlide`, (data: any) => {
-      console.log(data);
       setPresentation((prev) => {
         if (!prev) return null;
-        console.log(prev.slices);
         const { number, slice } = data;
         const newData = [...prev.slices];
         newData[number] = slice;
         return { ...prev, slices: newData };
       });
     });
+    socket.on(`presentation:${code}:chat`, (data) => {
+      setChats((prev) => [data, ...prev]);
+    });
+    socket.on(`presentation:${user?.id}:oldchat`, (data) => {
+      setChats((prev) => {
+        return [...prev, ...data];
+      });
+    });
+    socket.on(`presentation:${code}:stop`, () => {
+      notificationController.info({ message: 'Presentation has been stopped' });
+      window.open('about:blank', '_self');
+      window.close();
+    });
   };
+  // const handleSendMessage = (message: string) => {
+  //   socket.emit('presentation:chat', { code: presentation?.code, message: message, userId: user?.id });
+  // };
 
+  // const handleLoadMore = (page: number) => {
+  //   socket.emit('presentation:oldchat', { code: presentation?.code, page: page, randomNumber: user?.id });
+  // };
   return (
     <S.Container>
       {presentation?.slices[selectedSlice] ? (
@@ -113,6 +144,24 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
           Next
         </Button>
       </S.Action>
+      {presentation?.id ? (
+        <ChatBox
+          visible={chatVisible}
+          onSendMesage={(message: string) => {
+            socket.emit('presentation:chat', { code: presentation?.code, message: message, userId: user?.id });
+          }}
+          onChatVisible={setChatVisible}
+          onLoadMore={(page: number) => {
+            socket.emit('presentation:oldchat', { code: presentation?.code, page: page, randomNumber: user?.id });
+          }}
+          chats={chats}
+        />
+      ) : null}
+      <S.FloatButton>
+        <div>
+          <MessageOutlined onClick={() => setChatVisible(!chatVisible)} />
+        </div>
+      </S.FloatButton>
     </S.Container>
   );
 };
