@@ -1,26 +1,20 @@
-import React from 'react';
 import { Col, Row } from 'antd';
-import { ProfileDropdown } from '../components/profileDropdown/ProfileDropdown/ProfileDropdown';
-import { HeaderSearch } from '../components/HeaderSearch/HeaderSearch';
-import { SettingsDropdown } from '../components/settingsDropdown/SettingsDropdown';
+import React from 'react';
 import { HeaderFullscreen } from '../components/HeaderFullscreen/HeaderFullscreen';
+import { ProfileDropdown } from '../components/profileDropdown/ProfileDropdown/ProfileDropdown';
+import { SettingsDropdown } from '../components/settingsDropdown/SettingsDropdown';
 import * as S from '../Header.styles';
+import { Creatation } from './Creatation';
 
 interface DesktopHeaderProps {
   isTwoColumnsLayout: boolean;
 }
 
 export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout }) => {
-  const leftSide = isTwoColumnsLayout ? (
-    <S.SearchColumn xl={16} xxl={17}></S.SearchColumn>
-  ) : (
-    <S.SearchColumn xl={8} xxl={9}></S.SearchColumn>
-  );
-
   return (
     <Row justify="space-between" align="middle">
-      {leftSide}
-
+      <div></div>
+      <Creatation />
       <S.ProfileColumn xl={8} xxl={7} $isTwoColumnsLayout={isTwoColumnsLayout}>
         <Row align="middle" justify="end" gutter={[10, 10]}>
           <Col>

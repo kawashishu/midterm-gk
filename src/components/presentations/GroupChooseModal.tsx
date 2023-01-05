@@ -13,15 +13,11 @@ export interface GroupChooseModalProps {
 
 export const GroupChooseModal = ({ visible, onOk, onCancel, presentationId }: GroupChooseModalProps) => {
   const { groups } = useAppSelector((state) => state.groups);
+  const { user } = useAppSelector((state) => state.user);
 
   const [checkedGroup, setCheckedGroup] = useState<GroupModel[]>([]);
 
   useEffect(() => {
-    console.log(
-      [...groups.myGroups, ...groups.joinGroups].filter(
-        (group) => group.presentation && group.presentation.toString() === presentationId,
-      ),
-    );
     setCheckedGroup(
       [...groups.myGroups, ...groups.joinGroups].filter(
         (group) => group.presentation && group.presentation.toString() === presentationId,
@@ -45,7 +41,10 @@ export const GroupChooseModal = ({ visible, onOk, onCancel, presentationId }: Gr
       onCancel={onCancel}
     >
       <Checkbox.Group
-        options={[...groups.myGroups, ...groups.joinGroups].map((group) => {
+        options={[
+          ...groups.myGroups,
+          ...groups.joinGroups.filter((g) => user?.id && (g.coOwner as unknown as string[]).includes(user?.id)),
+        ].map((group) => {
           return {
             label: group.name,
             value: group.id,

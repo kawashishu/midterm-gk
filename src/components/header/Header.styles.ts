@@ -71,6 +71,9 @@ export const MobileBurger = styled(BurgerIcon)`
 
 export const SearchColumn = styled(Col)`
   padding: ${LAYOUT.desktop.paddingVertical} ${LAYOUT.desktop.paddingHorizontal};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 interface ProfileColumn {
@@ -86,4 +89,29 @@ export const ProfileColumn = styled(Col)<ProfileColumn>`
         padding: ${LAYOUT.desktop.paddingVertical} ${LAYOUT.desktop.paddingHorizontal};
       `}
   }
+`;
+
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  height: 80%;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Wrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 80%;
+`;
+
+export const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 300px;
 `;

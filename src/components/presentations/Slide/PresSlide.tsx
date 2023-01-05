@@ -27,7 +27,7 @@ export const PresSlide = ({
       },
     },
     grid: {
-      top: 0,
+      top: 30,
       left: 0,
       right: 0,
       bottom: 0,
