@@ -29,7 +29,7 @@ export const Options = styled.div`
   justify-content: center;
   gap: 10px;
   position: absolute;
-  bottom: 40px;
+  bottom: 20px;
 `;
 
 export const FloatButton = styled.div`

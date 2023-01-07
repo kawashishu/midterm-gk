@@ -4,7 +4,6 @@ import styled from 'styled-components';
 export const Slide = styled(Card)`
   display: flex;
   flex-direction: column;
-  gap: 15px;
   min-height: 300px;
   min-width: 500px;
   width: 100%;
@@ -12,10 +11,11 @@ export const Slide = styled(Card)`
 `;
 
 export const SildeBody = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   gap: 15px;
   min-height: 300px;
   min-width: 500px;

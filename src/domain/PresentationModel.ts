@@ -47,3 +47,14 @@ export interface MessageModel {
   user: UserModel;
   createdAt: string;
 }
+
+export interface QuestionModel {
+  id: string;
+  user: UserModel;
+  createdAt: string;
+  question: string;
+  upvotes: number;
+  voted: string[];
+  answered: boolean;
+
+}

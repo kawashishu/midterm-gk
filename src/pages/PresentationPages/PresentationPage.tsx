@@ -14,6 +14,8 @@ import { Select } from '@app/components/common/selects/Select/Select';
 import { AnswersModal } from '@app/components/presentations/AnswersModal';
 import { CollaboratorModal } from '@app/components/presentations/CollaboratorModal';
 import { GroupChooseModal } from '@app/components/presentations/GroupChooseModal';
+import { HeadingContentForm } from '@app/components/presentations/HeadingContentForm/HeadingContentForm';
+import { ParagraphContentForm } from '@app/components/presentations/HeadingContentForm/ParagraphContentForm';
 import { MultiChoiceContentForm } from '@app/components/presentations/MultiChoiceContentForm/MultiChoiceContentForm';
 import { PresSlide } from '@app/components/presentations/Slide/PresSlide';
 import { Slide } from '@app/components/presentations/Slide/PresSlide.styles';
@@ -23,6 +25,7 @@ import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { setPresentation as reduxSetPresentation } from '@app/store/slices/presentationSlice';
 import { Button, Row, Tabs, Form, Modal, Popconfirm } from 'antd';
+import Paragraph from 'antd/lib/skeleton/Paragraph';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
@@ -301,8 +304,8 @@ export const PresentationPage = ({ socket }: { socket: Socket }) => {
                 {selectedSlice.type === SliceType.MULTIPLE_CHOICE && (
                   <MultiChoiceContentForm options={selectedSlice.options} />
                 )}
-                {selectedSlice.type === SliceType.HEADING && null}
-                {selectedSlice.type === SliceType.PARAGRAGH && null}
+                {selectedSlice.type === SliceType.HEADING && <HeadingContentForm/> }
+                {selectedSlice.type === SliceType.PARAGRAGH && <ParagraphContentForm/>}
               </S.ContentSection>
               <BaseForm.Item>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>

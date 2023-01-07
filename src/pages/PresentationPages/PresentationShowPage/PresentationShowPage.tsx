@@ -1,9 +1,10 @@
-import { MessageOutlined } from '@ant-design/icons';
+import { MessageOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { getPresentationById } from '@app/api/presentation.api';
 import { ChatBox } from '@app/components/presentations/ChatBox/ChatBox';
+import { QuestionBox } from '@app/components/presentations/QuestionBox/QuestionBox';
 import { PresSlide } from '@app/components/presentations/Slide/PresSlide';
 import { notificationController } from '@app/controllers/notificationController';
-import { MessageModel, PresentationModel, SlideModel } from '@app/domain/PresentationModel';
+import { MessageModel, PresentationModel, QuestionModel, SlideModel } from '@app/domain/PresentationModel';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Button } from 'antd';
 import { useEffect, useState } from 'react';
@@ -23,6 +24,8 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
 
   const [chats, setChats] = useState<MessageModel[]>([] as MessageModel[]);
   const [chatVisible, setChatVisible] = useState(false);
+  const [questions, setQuestions] = useState<QuestionModel[]>([] as QuestionModel[]);
+  const [questionVisible, setQuestionVisible] = useState(false);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -102,6 +105,17 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
         return [...prev, ...data];
       });
     });
+    socket.on(`presentation:${user?.id}:oldquestion`, (data) => {
+      setQuestions((prev) => {
+        return [...prev, ...data];
+      });
+    });
+    socket.on(`presentation:${code}:question`, (data) => {
+      setQuestions((prev) => [data, ...prev]);
+    });
+    socket.on(`presentation:${code}:upvotequestion`, (data) => {
+      setQuestions((prev) => prev.map((q) => (q.id === data.id ? data : q)));
+    });
     socket.on(`presentation:${code}:stop`, () => {
       notificationController.info({ message: 'Presentation has been stopped' });
       window.open('about:blank', '_self');
@@ -145,6 +159,7 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
         </Button>
       </S.Action>
       {presentation?.id ? (
+        <>
         <ChatBox
           visible={chatVisible}
           onSendMesage={(message: string) => {
@@ -156,8 +171,28 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
           }}
           chats={chats}
         />
+        <QuestionBox
+            visible={questionVisible}
+            onSendQuestion={(message: string) => {
+              socket.emit('presentation:question', { code: presentation?.code, message: message, userId: user?.id });
+            } }
+            onQuestionVisible={setQuestionVisible}
+            onLoadMore={(page: number) => {
+              socket.emit('presentation:oldquestion', { code: presentation?.code, page: page, randomNumber: user?.id });
+            } }
+            questions={questions}
+            isOwner={true} 
+            identifier={user?.id || ''} 
+            answered= {(id: string) => {
+              socket.emit('presentation:question:answered', { code: presentation?.code, questionId: id });
+            }}
+        />
+        </>
       ) : null}
       <S.FloatButton>
+      <div>
+          <QuestionCircleOutlined onClick={() => setQuestionVisible(!chatVisible)} />
+        </div>
         <div>
           <MessageOutlined onClick={() => setChatVisible(!chatVisible)} />
         </div>

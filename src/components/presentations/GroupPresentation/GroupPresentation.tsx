@@ -1,11 +1,12 @@
-import { ExpandOutlined, FullscreenExitOutlined, MessageOutlined } from '@ant-design/icons';
+import { ExpandOutlined, FullscreenExitOutlined, MessageOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { notificationController } from '@app/controllers/notificationController';
-import { MessageModel, SliceType, SlideModel } from '@app/domain/PresentationModel';
+import { MessageModel, QuestionModel, SliceType, SlideModel } from '@app/domain/PresentationModel';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Radio, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChatBox } from '../ChatBox/ChatBox';
+import { QuestionBox } from '../QuestionBox/QuestionBox';
 import { PresSlide } from '../Slide/PresSlide';
 import * as S from './GroupPresentation.styles';
 
@@ -17,7 +18,9 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
   const [isAnswered, setIsAnswered] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [chats, setChats] = useState<MessageModel[]>([] as MessageModel[]);
+  const [questions, setQuestions] = useState<QuestionModel[]>([] as QuestionModel[]);
   const [chatVisible, setChatVisible] = useState(false);
+  const [questionVisible, setQuestionVisible] = useState(false);
 
   const listen = (code: string) => {
     socket.on(`presentation:${code}:slide`, (data: SlideModel) => {
@@ -32,6 +35,12 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
     });
     socket.on(`presentation:${code}:chat`, (data) => {
       setChats((prev) => [data, ...prev]);
+    });
+    socket.on(`presentation:${code}:question`, (data) => {
+      setQuestions((prev) => [data, ...prev]);
+    });
+    socket.on(`presentation:${code}:upvotequestion`, (data) => {
+      setQuestions((prev) => prev.map((q) => (q.id === data.id ? data : q)));
     });
     socket.on(`presentation:${code}:stop`, () => {
       setSlide({} as SlideModel);
@@ -48,6 +57,11 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
     socket.emit('presentation:join', { code: code, userId: user?.id, randomNumber: randomNumber });
     socket.on(`presentation:${randomNumber}:oldchat`, (data) => {
       setChats((prev) => {
+        return [...prev, ...data];
+      });
+    });
+    socket.on(`presentation:${randomNumber}:oldquestion`, (data) => {
+      setQuestions((prev) => {
         return [...prev, ...data];
       });
     });
@@ -70,6 +84,16 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
   const handleLoadMore = (page: number) => {
     socket.emit('presentation:oldchat', { code: code, page: page, randomNumber: randomNumber });
   };
+
+  const handleSendQuestion = (question: string) => {
+    socket.emit('presentation:question', { code: code, question: question, userId: user?.id });
+  };
+
+  const handleLoadMoreQuestion = (page: number) => {
+    socket.emit('presentation:oldquestion', { code: code, page: page, randomNumber: randomNumber });
+  };
+
+
   return (
     <S.Container $isFullScreen={isFullscreen}>
       <PresSlide slide={slide} />
@@ -100,7 +124,24 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
         onLoadMore={handleLoadMore}
         chats={chats}
       />
+
+      <QuestionBox 
+        visible={questionVisible}
+        onSendQuestion={handleSendQuestion}
+        onQuestionVisible={setQuestionVisible}
+        onLoadMore={handleLoadMoreQuestion}
+        questions={questions}
+        isOwner={false}
+        identifier={user?.id || randomNumber.toString()}
+        toggleVote= {(id) => {
+          socket.emit('presentation:vote', { code: code, questionId: id, userId: user?.id, randomNumber: randomNumber });
+        }}
+      />
+
       <S.FloatButton>
+        <div>
+          <QuestionCircleOutlined onClick={() => setQuestionVisible(true)} />
+        </div>
         <div>
           <MessageOutlined onClick={() => setChatVisible(!chatVisible)} />
         </div>
