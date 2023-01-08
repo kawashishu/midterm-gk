@@ -10,7 +10,6 @@ export const ParagraphContentForm = () => {
       <BaseForm.Item label="Paragraph" name="content">
         <Input.TextArea placeholder="Paragraph" />
       </BaseForm.Item>
-
     </>
   );
 };

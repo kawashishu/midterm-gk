@@ -1,14 +1,10 @@
-import { MessageOutlined } from '@ant-design/icons';
 import { joinPresentation } from '@app/api/presentation.api';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Input } from '@app/components/common/inputs/Input/Input';
-import { ChatBox } from '@app/components/presentations/ChatBox/ChatBox';
 import { GroupPresentation } from '@app/components/presentations/GroupPresentation/GroupPresentation';
-import { PresSlide } from '@app/components/presentations/Slide/PresSlide';
 import { notificationController } from '@app/controllers/notificationController';
-import { MessageModel, SliceType, SlideModel } from '@app/domain/PresentationModel';
-import { Card, Radio, Space } from 'antd';
+import { Card } from 'antd';
 import { useState } from 'react';
 import { Socket } from 'socket.io-client';
 import * as S from './Public.styles';
@@ -33,10 +29,14 @@ export const PublicPresentationPage = ({ socket }: { socket: Socket }) => {
       {onPresentation && code ? (
         <>
           <S.Container>
-          <GroupPresentation socket={socket} code={code} onStop={()=>{
-            setOnPresentation(false);
-            setCode(null);
-          }}/>
+            <GroupPresentation
+              socket={socket}
+              code={code}
+              onStop={() => {
+                setOnPresentation(false);
+                setCode(null);
+              }}
+            />
           </S.Container>
         </>
       ) : (

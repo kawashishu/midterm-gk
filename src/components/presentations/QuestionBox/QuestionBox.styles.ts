@@ -62,28 +62,25 @@ export const QuestionInput = styled.div`
 `;
 
 export const Question = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid var(--sider-background-color);
-    border-radius: 10px;
-    padding: 0.25rem 1rem;
-    gap: 10px;
-
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--sider-background-color);
+  border-radius: 10px;
+  padding: 0.25rem 1rem;
+  gap: 10px;
 `;
 
 export const LikeSection = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    hover: pointer;
-    // i want to change the color of green when hover the effect radiates blue color continuously, looks like broadcast
-    &:hover {
-        color: green;
-    }
-
-
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  hover: pointer;
+  // i want to change the color of green when hover the effect radiates blue color continuously, looks like broadcast
+  &:hover {
+    color: green;
+  }
 `;

@@ -56,5 +56,4 @@ export interface QuestionModel {
   upvotes: number;
   voted: string[];
   answered: boolean;
-
 }

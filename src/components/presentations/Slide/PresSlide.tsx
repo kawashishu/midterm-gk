@@ -83,7 +83,7 @@ export const PresSlide = ({
         <h1>{slide.heading}</h1>
         <h2>{slide.subheading}</h2>
         <p>{slide.content}</p>
-        {slide.type === SliceType.MULTIPLE_CHOICE ? <BaseChart option={option} width="80%"/> : null}
+        {slide.type === SliceType.MULTIPLE_CHOICE ? <BaseChart option={option} width="80%" /> : null}
       </S.SildeBody>
     </S.Slide>
   );

@@ -3,11 +3,11 @@ import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { notificationController } from '@app/controllers/notificationController';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const VerifyEmailPage: React.FC = () => {
   const { t } = useTranslation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const navigate = useNavigate();
   useEffect(() => {
     const token = searchParams.get('token');

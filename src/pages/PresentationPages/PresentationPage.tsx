@@ -304,8 +304,8 @@ export const PresentationPage = ({ socket }: { socket: Socket }) => {
                 {selectedSlice.type === SliceType.MULTIPLE_CHOICE && (
                   <MultiChoiceContentForm options={selectedSlice.options} />
                 )}
-                {selectedSlice.type === SliceType.HEADING && <HeadingContentForm/> }
-                {selectedSlice.type === SliceType.PARAGRAGH && <ParagraphContentForm/>}
+                {selectedSlice.type === SliceType.HEADING && <HeadingContentForm />}
+                {selectedSlice.type === SliceType.PARAGRAGH && <ParagraphContentForm />}
               </S.ContentSection>
               <BaseForm.Item>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>

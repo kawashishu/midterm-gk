@@ -160,37 +160,37 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
       </S.Action>
       {presentation?.id ? (
         <>
-        <ChatBox
-          visible={chatVisible}
-          onSendMesage={(message: string) => {
-            socket.emit('presentation:chat', { code: presentation?.code, message: message, userId: user?.id });
-          }}
-          onChatVisible={setChatVisible}
-          onLoadMore={(page: number) => {
-            socket.emit('presentation:oldchat', { code: presentation?.code, page: page, randomNumber: user?.id });
-          }}
-          chats={chats}
-        />
-        <QuestionBox
+          <ChatBox
+            visible={chatVisible}
+            onSendMesage={(message: string) => {
+              socket.emit('presentation:chat', { code: presentation?.code, message: message, userId: user?.id });
+            }}
+            onChatVisible={setChatVisible}
+            onLoadMore={(page: number) => {
+              socket.emit('presentation:oldchat', { code: presentation?.code, page: page, randomNumber: user?.id });
+            }}
+            chats={chats}
+          />
+          <QuestionBox
             visible={questionVisible}
             onSendQuestion={(message: string) => {
               socket.emit('presentation:question', { code: presentation?.code, message: message, userId: user?.id });
-            } }
+            }}
             onQuestionVisible={setQuestionVisible}
             onLoadMore={(page: number) => {
               socket.emit('presentation:oldquestion', { code: presentation?.code, page: page, randomNumber: user?.id });
-            } }
+            }}
             questions={questions}
-            isOwner={true} 
-            identifier={user?.id || ''} 
-            answered= {(id: string) => {
+            isOwner={true}
+            identifier={user?.id || ''}
+            answered={(id: string) => {
               socket.emit('presentation:question:answered', { code: presentation?.code, questionId: id });
             }}
-        />
+          />
         </>
       ) : null}
       <S.FloatButton>
-      <div>
+        <div>
           <QuestionCircleOutlined onClick={() => setQuestionVisible(!chatVisible)} />
         </div>
         <div>

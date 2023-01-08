@@ -1,4 +1,11 @@
-import { CheckCircleFilled, CheckCircleOutlined, LikeFilled, LikeOutlined, MinusOutlined, SendOutlined } from '@ant-design/icons';
+import {
+  CheckCircleFilled,
+  CheckCircleOutlined,
+  LikeFilled,
+  LikeOutlined,
+  MinusOutlined,
+  SendOutlined,
+} from '@ant-design/icons';
 import { QuestionModel } from '@app/domain/PresentationModel';
 import { Typography, Input, Comment, Spin } from 'antd';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
@@ -24,7 +31,7 @@ export const QuestionBox = ({
   isOwner: boolean;
   identifier: string;
   toggleVote?: (questionId: string) => void;
-  answered? : (id: string) => void;
+  answered?: (id: string) => void;
 }) => {
   const [Question, setQuestion] = useState('');
   const QuestionlistRef = useRef() as MutableRefObject<HTMLDivElement>;
@@ -33,9 +40,9 @@ export const QuestionBox = ({
 
   useEffect(() => {
     if (QuestionlistRef.current) {
-      const element = QuestionlistRef.current as HTMLElement; 
+      const element = QuestionlistRef.current as HTMLElement;
       element.addEventListener('scroll', () => {
-        if (element.scrollTop >= element.scrollHeight - element.clientHeight  - 10) {
+        if (element.scrollTop >= element.scrollHeight - element.clientHeight - 10) {
           setIsLoading(true);
           onLoadMore(QuestionPage.current);
           QuestionPage.current = QuestionPage.current + 1;
@@ -71,44 +78,56 @@ export const QuestionBox = ({
           </S.QuestionHeader>
           <S.QuestionList ref={QuestionlistRef}>
             {questions.map((Question) => (
-              <S.Question
-                key={Question.id}
-              >
-                <span style={{textDecoration: Question.answered? 'underline': ''}}>{Question.question}</span>
+              <S.Question key={Question.id}>
+                <span style={{ textDecoration: Question.answered ? 'underline' : '' }}>{Question.question}</span>
                 <S.LikeSection>
-                <span>{Question.upvotes}</span>
-                {isOwner ? Question.answered? <CheckCircleOutlined style={{color: 'green'}}/>: <CheckCircleOutlined onClick={()=>{
-                    answered&&answered(Question.id)
-                }}/>: <>{Question.voted && Question.voted.includes(identifier)? 
-                    <LikeFilled onClick={() => toggleVote&&toggleVote(Question.id)} style={{color: 'red'}}/> : 
-                    <LikeOutlined onClick={() => toggleVote&&toggleVote(Question.id)}  />
-                }</>}
+                  <span>{Question.upvotes}</span>
+                  {isOwner ? (
+                    Question.answered ? (
+                      <CheckCircleOutlined style={{ color: 'green' }} />
+                    ) : (
+                      <CheckCircleOutlined
+                        onClick={() => {
+                          answered && answered(Question.id);
+                        }}
+                      />
+                    )
+                  ) : (
+                    <>
+                      {Question.voted && Question.voted.includes(identifier) ? (
+                        <LikeFilled onClick={() => toggleVote && toggleVote(Question.id)} style={{ color: 'red' }} />
+                      ) : (
+                        <LikeOutlined onClick={() => toggleVote && toggleVote(Question.id)} />
+                      )}
+                    </>
+                  )}
                 </S.LikeSection>
-                </S.Question>
+              </S.Question>
             ))}
             {isLoading && <Spin />}
           </S.QuestionList>
-          {!isOwner? 
-          <S.QuestionInput>
-            <Input
-              suffix={
-                <SendOutlined
-                  onClick={() => {
+          {!isOwner ? (
+            <S.QuestionInput>
+              <Input
+                suffix={
+                  <SendOutlined
+                    onClick={() => {
+                      onSendQuestion(Question);
+                      setQuestion('');
+                    }}
+                  />
+                }
+                value={Question}
+                onChange={(e) => setQuestion(e.currentTarget.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
                     onSendQuestion(Question);
                     setQuestion('');
-                  }}
-                />
-              }
-              value={Question}
-              onChange={(e) => setQuestion(e.currentTarget.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    onSendQuestion(Question);
-                  setQuestion('');
-                }
-              }}
-            />
-          </S.QuestionInput>:null}
+                  }
+                }}
+              />
+            </S.QuestionInput>
+          ) : null}
         </S.QuestionBox>
       </Draggable>
     </S.Float>

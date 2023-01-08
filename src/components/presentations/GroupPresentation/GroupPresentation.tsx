@@ -93,7 +93,6 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
     socket.emit('presentation:oldquestion', { code: code, page: page, randomNumber: randomNumber });
   };
 
-
   return (
     <S.Container $isFullScreen={isFullscreen}>
       <PresSlide slide={slide} />
@@ -125,7 +124,7 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
         chats={chats}
       />
 
-      <QuestionBox 
+      <QuestionBox
         visible={questionVisible}
         onSendQuestion={handleSendQuestion}
         onQuestionVisible={setQuestionVisible}
@@ -133,8 +132,13 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
         questions={questions}
         isOwner={false}
         identifier={user?.id || randomNumber.toString()}
-        toggleVote= {(id) => {
-          socket.emit('presentation:vote', { code: code, questionId: id, userId: user?.id, randomNumber: randomNumber });
+        toggleVote={(id) => {
+          socket.emit('presentation:vote', {
+            code: code,
+            questionId: id,
+            userId: user?.id,
+            randomNumber: randomNumber,
+          });
         }}
       />
 

@@ -10,7 +10,6 @@ export const HeadingContentForm = () => {
       <BaseForm.Item label="SubHeading" name="subHeading">
         <Input placeholder="SubHeading" />
       </BaseForm.Item>
-
     </>
   );
 };
