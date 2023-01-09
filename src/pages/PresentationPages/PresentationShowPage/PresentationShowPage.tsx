@@ -7,7 +7,7 @@ import { notificationController } from '@app/controllers/notificationController'
 import { MessageModel, PresentationModel, QuestionModel, SlideModel } from '@app/domain/PresentationModel';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Button } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Socket } from 'socket.io-client';
 import * as S from './PresentationShowPage.styles';
@@ -26,6 +26,8 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
   const [chatVisible, setChatVisible] = useState(false);
   const [questions, setQuestions] = useState<QuestionModel[]>([] as QuestionModel[]);
   const [questionVisible, setQuestionVisible] = useState(false);
+  const chatNotify = useRef(0);
+  const questionNotify = useRef(0);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -41,6 +43,13 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
       socket.off('disconnect');
     };
   }, []);
+  useEffect(() => {
+    chatNotify.current = 0;
+  }, [chatVisible]);
+
+  useEffect(() => {
+    questionNotify.current = 0;
+  }, [questionVisible]);
 
   useEffect(() => {
     if (isLoadPresentation) return;
@@ -55,6 +64,7 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
           setPresentation(data as unknown as PresentationModel);
           listen(data.code);
           socket.emit('presentation:slide', { code: data.code, slide: data.slices[selectedSlice] });
+          socket.emit('presentation:join', { code: data?.code, randomNumber: user?.id });
           setIsLoadPresentation(false);
         })
         .catch((err) => {
@@ -70,10 +80,10 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
 
   useEffect(() => {
     if (!isConnected) return;
+    if (!selectedSlice) return;
     if (!presentation) return;
     socket.emit('presentation:slide', { code: presentation?.code, slide: presentation.slices[selectedSlice] });
-    socket.emit('presentation:join', { code: presentation?.code, randomNumber: user?.id });
-  }, [selectedSlice, presentation]);
+  }, [selectedSlice]);
 
   const listen = (code: string) => {
     socket.on(`presentation:${code}:answer`, (data: SlideModel) => {
@@ -99,6 +109,7 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
     });
     socket.on(`presentation:${code}:chat`, (data) => {
       setChats((prev) => [data, ...prev]);
+      chatNotify.current += 1;
     });
     socket.on(`presentation:${user?.id}:oldchat`, (data) => {
       setChats((prev) => {
@@ -112,6 +123,7 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
     });
     socket.on(`presentation:${code}:question`, (data) => {
       setQuestions((prev) => [data, ...prev]);
+      questionNotify.current += 1;
     });
     socket.on(`presentation:${code}:upvotequestion`, (data) => {
       setQuestions((prev) => prev.map((q) => (q.id === data.id ? data : q)));
@@ -122,13 +134,7 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
       window.close();
     });
   };
-  // const handleSendMessage = (message: string) => {
-  //   socket.emit('presentation:chat', { code: presentation?.code, message: message, userId: user?.id });
-  // };
 
-  // const handleLoadMore = (page: number) => {
-  //   socket.emit('presentation:oldchat', { code: presentation?.code, page: page, randomNumber: user?.id });
-  // };
   return (
     <S.Container>
       {presentation?.slices[selectedSlice] ? (
@@ -190,11 +196,13 @@ export const PresentationShowPage = ({ socket }: { socket: Socket }) => {
         </>
       ) : null}
       <S.FloatButton>
-        <div>
-          <QuestionCircleOutlined onClick={() => setQuestionVisible(!chatVisible)} />
+        <div onClick={() => setQuestionVisible(!questionVisible)}>
+          <QuestionCircleOutlined />
+          {!questionVisible && questionNotify.current > 0 && <S.Notify>{questionNotify.current}</S.Notify>}
         </div>
-        <div>
-          <MessageOutlined onClick={() => setChatVisible(!chatVisible)} />
+        <div onClick={() => setChatVisible(!chatVisible)}>
+          <MessageOutlined />
+          {!chatVisible && chatNotify.current > 0 && <S.Notify>{chatNotify.current}</S.Notify>}
         </div>
       </S.FloatButton>
     </S.Container>

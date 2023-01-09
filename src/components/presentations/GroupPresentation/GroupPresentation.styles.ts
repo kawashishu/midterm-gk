@@ -43,10 +43,20 @@ export const FloatButton = styled.div`
 
   div {
     padding: 0.5rem;
+    position: relative;
   }
 
   div:hover {
     cursor: pointer;
     scale: 1.2;
   }
+`;
+
+export const Notify = styled.span`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 0.5rem;
+  font-weight: bold;
+  color: red;
 `;

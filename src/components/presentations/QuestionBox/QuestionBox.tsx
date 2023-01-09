@@ -77,9 +77,9 @@ export const QuestionBox = ({
             </S.QuestionAcion>
           </S.QuestionHeader>
           <S.QuestionList ref={QuestionlistRef}>
-            {questions.map((Question) => (
+            {questions.sort(sortQuestion).map((Question) => (
               <S.Question key={Question.id}>
-                <span style={{ textDecoration: Question.answered ? 'underline' : '' }}>{Question.question}</span>
+                <span style={{ textDecoration: Question.answered ? 'line-through' : '' }}>{Question.question}</span>
                 <S.LikeSection>
                   <span>{Question.upvotes}</span>
                   {isOwner ? (
@@ -132,4 +132,24 @@ export const QuestionBox = ({
       </Draggable>
     </S.Float>
   );
+};
+
+const sortQuestion = (a: QuestionModel, b: QuestionModel) => {
+  if (a.answered && !b.answered) {
+    return 1;
+  } else if (!a.answered && b.answered) {
+    return -1;
+  }
+  if (a.upvotes > b.upvotes) {
+    return -1;
+  } else if (a.upvotes < b.upvotes) {
+    return 1;
+  }
+  const aDate = new Date(a.createdAt);
+  const bDate = new Date(b.createdAt);
+  if (aDate > bDate) {
+    return -1;
+  } else {
+    return 1;
+  }
 };

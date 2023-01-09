@@ -53,6 +53,7 @@ export const Creatation = () => {
         getPresentation().then((data) => {
           dispatch(setPresentation(data));
           notificationController.success({ message: 'Presentation created successfully' });
+          setPresentationVisible(false);
           navigate(`/presentation/${(res as any).id}`);
         });
       })

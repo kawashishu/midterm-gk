@@ -3,7 +3,7 @@ import { notificationController } from '@app/controllers/notificationController'
 import { MessageModel, QuestionModel, SliceType, SlideModel } from '@app/domain/PresentationModel';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Radio, Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { ChatBox } from '../ChatBox/ChatBox';
 import { QuestionBox } from '../QuestionBox/QuestionBox';
@@ -21,6 +21,16 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
   const [questions, setQuestions] = useState<QuestionModel[]>([] as QuestionModel[]);
   const [chatVisible, setChatVisible] = useState(false);
   const [questionVisible, setQuestionVisible] = useState(false);
+  const chatNotify = useRef(0);
+  const questionNotify = useRef(0);
+
+  useEffect(() => {
+    chatNotify.current = 0;
+  }, [chatVisible]);
+
+  useEffect(() => {
+    questionNotify.current = 0;
+  }, [questionVisible]);
 
   const listen = (code: string) => {
     socket.on(`presentation:${code}:slide`, (data: SlideModel) => {
@@ -35,9 +45,11 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
     });
     socket.on(`presentation:${code}:chat`, (data) => {
       setChats((prev) => [data, ...prev]);
+      chatNotify.current += 1;
     });
     socket.on(`presentation:${code}:question`, (data) => {
       setQuestions((prev) => [data, ...prev]);
+      questionNotify.current += 1;
     });
     socket.on(`presentation:${code}:upvotequestion`, (data) => {
       setQuestions((prev) => prev.map((q) => (q.id === data.id ? data : q)));
@@ -143,18 +155,16 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
       />
 
       <S.FloatButton>
-        <div>
-          <QuestionCircleOutlined onClick={() => setQuestionVisible(true)} />
+        <div onClick={() => setQuestionVisible(!questionVisible)}>
+          <QuestionCircleOutlined />
+          {!questionVisible && questionNotify.current > 0 && <S.Notify>{questionNotify.current}</S.Notify>}
         </div>
-        <div>
-          <MessageOutlined onClick={() => setChatVisible(!chatVisible)} />
+        <div onClick={() => setChatVisible(!chatVisible)}>
+          <MessageOutlined />
+          {!chatVisible && chatNotify.current > 0 && <S.Notify>{chatNotify.current}</S.Notify>}
         </div>
-        <div>
-          {isFullscreen ? (
-            <FullscreenExitOutlined onClick={() => setIsFullscreen(false)} />
-          ) : (
-            <ExpandOutlined onClick={() => setIsFullscreen(true)} />
-          )}
+        <div onClick={() => setIsFullscreen(!isFullscreen)}>
+          {isFullscreen ? <FullscreenExitOutlined /> : <ExpandOutlined />}
         </div>
       </S.FloatButton>
     </S.Container>
