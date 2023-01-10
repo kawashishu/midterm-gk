@@ -62,7 +62,7 @@ export const ChatBox = ({
             </S.ChatAcion>
           </S.ChatHeader>
           <S.ChatList ref={chatlistRef}>
-            {chats.map((chat) => (
+            {uniqChats(chats).map((chat) => (
               <Comment
                 key={chat.id}
                 author={chat.user ? chat.user.email : 'anonymous'}
@@ -96,4 +96,11 @@ export const ChatBox = ({
       </Draggable>
     </S.Float>
   );
+};
+
+const uniqChats = (chats: MessageModel[]) => {
+  const seen = new Set();
+  return chats.filter((chat) => {
+    return seen.has(chat.id) ? false : seen.add(chat.id);
+  });
 };

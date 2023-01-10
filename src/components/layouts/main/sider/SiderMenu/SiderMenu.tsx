@@ -91,7 +91,6 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
           title: 'common.presentation',
           key: 'presentation',
           icon: <PresentationIcon />,
-          url: '/presentation',
           children: presentationNav,
         },
       ]);

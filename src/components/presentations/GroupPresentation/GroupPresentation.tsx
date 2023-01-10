@@ -21,15 +21,15 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
   const [questions, setQuestions] = useState<QuestionModel[]>([] as QuestionModel[]);
   const [chatVisible, setChatVisible] = useState(false);
   const [questionVisible, setQuestionVisible] = useState(false);
-  const chatNotify = useRef(0);
-  const questionNotify = useRef(0);
+  const [chatNotify, setChatNotify] = useState(0);
+  const [questionNotify, setQuestionNotify] = useState(0);
 
   useEffect(() => {
-    chatNotify.current = 0;
+    setChatNotify(0);
   }, [chatVisible]);
 
   useEffect(() => {
-    questionNotify.current = 0;
+    setQuestionNotify(0);
   }, [questionVisible]);
 
   const listen = (code: string) => {
@@ -45,11 +45,11 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
     });
     socket.on(`presentation:${code}:chat`, (data) => {
       setChats((prev) => [data, ...prev]);
-      chatNotify.current += 1;
+      setChatNotify((prev) => prev + 1);
     });
     socket.on(`presentation:${code}:question`, (data) => {
       setQuestions((prev) => [data, ...prev]);
-      questionNotify.current += 1;
+      setQuestionNotify((prev) => prev + 1);
     });
     socket.on(`presentation:${code}:upvotequestion`, (data) => {
       setQuestions((prev) => prev.map((q) => (q.id === data.id ? data : q)));
@@ -157,11 +157,11 @@ export const GroupPresentation = ({ code, socket, onStop }: { code: string; sock
       <S.FloatButton>
         <div onClick={() => setQuestionVisible(!questionVisible)}>
           <QuestionCircleOutlined />
-          {!questionVisible && questionNotify.current > 0 && <S.Notify>{questionNotify.current}</S.Notify>}
+          {!questionVisible && questionNotify > 0 && <S.Notify>{questionNotify}</S.Notify>}
         </div>
         <div onClick={() => setChatVisible(!chatVisible)}>
           <MessageOutlined />
-          {!chatVisible && chatNotify.current > 0 && <S.Notify>{chatNotify.current}</S.Notify>}
+          {!chatVisible && chatNotify > 0 ? <S.Notify>{chatNotify}</S.Notify> : null}
         </div>
         <div onClick={() => setIsFullscreen(!isFullscreen)}>
           {isFullscreen ? <FullscreenExitOutlined /> : <ExpandOutlined />}
