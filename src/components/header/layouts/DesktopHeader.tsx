@@ -19,9 +19,9 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
         <Row align="middle" justify="end" gutter={[10, 10]}>
           <Col>
             <Row gutter={[{ xxl: 10 }, { xxl: 10 }]}>
-              <Col>
+              {/* <Col>
                 <HeaderFullscreen />
-              </Col>
+              </Col> */}
 
               <Col>
                 <SettingsDropdown />

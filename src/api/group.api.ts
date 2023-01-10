@@ -36,3 +36,6 @@ export const setCoOwner = (user: UserModel, group: GroupModel): Promise<undefine
 
 export const setMember = (user: UserModel, group: GroupModel): Promise<undefined> =>
   httpApi.post('groups/set-member', { userId: user.id, groupId: group.id }).then(({ data }) => data);
+
+export const removeGroup = (groupId: string): Promise<undefined> =>
+  httpApi.delete(`groups/remove-group/${groupId}`).then(({ data }) => data);

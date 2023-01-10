@@ -21,7 +21,7 @@ export const InvitationPage = () => {
           navigate('/');
         });
     }
-  });
+  }, [params]);
 
   return (
     <>

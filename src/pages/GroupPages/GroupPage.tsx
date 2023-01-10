@@ -2,6 +2,7 @@ import { CrownOutlined, GroupOutlined, SettingOutlined, UsergroupAddOutlined } f
 import {
   getGroup,
   inviteUsersToGroup,
+  removeGroup,
   removeUserFromGroup,
   setCoOwner,
   setMember,
@@ -14,9 +15,10 @@ import { GroupPresentation } from '@app/components/presentations/GroupPresentati
 import { notificationController } from '@app/controllers/notificationController';
 import { GroupModel } from '@app/domain/GroupModel';
 import { UserModel } from '@app/domain/UserModel';
-import { useAppSelector } from '@app/hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '@app/hooks/reduxHooks';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { Button, Row, Switch, Typography, Modal, Select, Tooltip } from 'antd';
+import { setGroups } from '@app/store/slices/groupSlice';
+import { Button, Row, Switch, Typography, Modal, Select, Tooltip, Popconfirm } from 'antd';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -26,7 +28,9 @@ import * as S from './GroupPage.styles';
 export const GroupPage = ({ socket }: { socket: Socket }) => {
   const { isDesktop } = useResponsive();
   const navigator = useNavigate();
+  const dispatch = useAppDispatch();
 
+  const groups = useAppSelector((state) => state.groups.groups);
   const params = useParams();
   const [group, setGroup] = useState<GroupModel | null>(null);
 
@@ -153,12 +157,45 @@ export const GroupPage = ({ socket }: { socket: Socket }) => {
       </S.FloatButton>
       <Modal
         visible={showSettings}
-        onCancel={() => {
-          setShowSettings(false);
-        }}
-        onOk={() => {
-          setShowSettings(false);
-        }}
+        footer={
+          <>
+            {isOwner && (
+              <Popconfirm
+                placement="top"
+                title={'Are you sure remove this group ?'}
+                onConfirm={() => {
+                  removeGroup(group?.id || '')
+                    .then(() => {
+                      dispatch(
+                        setGroups({
+                          ...groups,
+                          myGroups: groups.myGroups.filter((group) => group.id !== params.id),
+                        }),
+                      );
+                      navigator('/');
+                      notificationController.success({ message: 'Group removed' });
+                    })
+                    .catch((err) => {
+                      notificationController.error({ message: err.message });
+                    });
+                }}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button htmlType="button" type="primary">
+                  Remove Group
+                </Button>
+              </Popconfirm>
+            )}
+            <Button
+              onClick={() => {
+                setShowSettings(false);
+              }}
+            >
+              Ok
+            </Button>
+          </>
+        }
       >
         <Row>
           <S.Wrapper>

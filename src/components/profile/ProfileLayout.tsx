@@ -39,11 +39,11 @@ const ProfileLayout: React.FC = () => {
         </Btn>
       )}
 
-      <Row gutter={[30, 30]}>
+      <Row gutter={[30, 30]} style={{ paddingLeft: '5rem', marginLeft: 0, marginRight: 0 }}>
         {isTitleShown && (
-          <Col xs={24} md={24} xl={8}>
+          <Col xs={22} md={22} xl={8}>
             <ProfileCard>
-              <Row gutter={[30, 30]}>
+              <Row gutter={[26, 26]}>
                 <Col xs={24} md={12} xl={24}>
                   <ProfileInfo profileData={user} />
                 </Col>

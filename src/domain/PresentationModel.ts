@@ -16,7 +16,7 @@ export interface SlideModel {
   id: string;
   type: SliceType;
   heading?: string;
-  subheading?: string;
+  subHeading?: string;
   content?: string;
   options?: OptionModel[];
   answers: AnswerModal[];
